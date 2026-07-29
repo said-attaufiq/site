@@ -1,7 +1,6 @@
-# Task List: Refinement Beranda & Navigasi Liquid
+# Task List: Sinkronisasi Seluruh Konten Galeri
 
-- `[x]` Update `style.css` (Layout Fix & Liquid Navigation)
-- `[x]` Update `index.html` (Branding & Konten Baru)
-- `[x]` Update `karya.html`, `tentang.html`, `kontak.html` (Konsistensi Navigasi)
-- `[x]` Update `script.js` (Support Animasi Smooth)
-- `[x]` Verifikasi Efek Gooey & Layout
+- `[x]` Audit seluruh file di direktori assets (13 kategori)
+- `[x]` Update `script.js` dengan daftar lengkap file & ekstensi yang benar
+- `[x]` Verifikasi kemunculan file `.webp` dan file baru lainnya
+- `[x]` Verifikasi fitur pratinjau untuk konten baru

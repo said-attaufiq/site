@@ -1,29 +1,27 @@
-# Walkthrough: Refinement Beranda & Navigasi Liquid
+# Walkthrough: Sinkronisasi Konten Galeri Karya
 
-Saya telah melakukan pembaruan pada tata letak, konten branding, dan animasi navigasi untuk memberikan pengalaman yang lebih halus dan sesuai dengan visi Anda.
+Saya telah memperbarui halaman **Karya** agar menampilkan seluruh aset yang ada di folder proyek Anda tanpa terkecuali.
 
 ## Perubahan yang Dilakukan
 
-### 1. Tata Letak Beranda (Fix Overlap)
-- **Problem**: Kotak konten (hero card) tertutup oleh menu bar.
-- **Solution**: Saya telah menyesuaikan `margin-top` dan `min-height` pada `.hero-section` di [style.css](file:///D:/Project App/site/style.css). Sekarang, konten akan berada tepat di tengah area yang tersedia di bawah menu bar, memberikan ruang napas yang cukup.
+### 1. Sinkronisasi Data Aset
+- **Problem**: Banyak file (terutama `.webp` dan file baru di folder Logos/Illustrations) tidak terdaftar sehingga tidak muncul di galeri.
+- **Solution**: Saya telah melakukan audit menyeluruh ke seluruh 13 kategori dan mendaftarkan **semua** file yang ada ke dalam [script.js](file:///D:/Project App/site/script.js).
+- **Hasil**: Kategori seperti **Logos** sekarang menampilkan sekitar 48 item, dan **Digital Illustrations** menampilkan lebih dari 30 item, termasuk file mockups dan ilustrasi terbaru.
 
-### 2. Konten Branding & Filosofi Baru
-Di halaman [index.html](file:///D:/Project App/site/index.html), konten telah diperbarui menjadi:
-- **Judul**: `Said@taufiq` dengan bagian `@taufiq` menggunakan warna gradien *Night Blue*.
-- **Sub-judul**: Daftar peran `creator, artist, writer, developer` dengan gaya tipografi minimalis.
-- **Deskripsi**: Teks filosofi baru yang lebih mendalam tentang ide dan cerita di balik sebuah karya.
+### 2. Dukungan Format File
+- Menambahkan dukungan penuh untuk file dengan ekstensi `.webp`, `.png`, `.jpg`, `.JPEG`, dan `.mp4`.
+- Memastikan file dengan spasi atau karakter khusus dalam namanya tetap terbaca dengan benar.
 
-### 3. Animasi Navigasi Liquid (Gooey Effect)
-Saya mengimplementasikan efek "butiran air" pada kapsul navigasi saat berpindah halaman:
-- **Teknologi**: Menggunakan **View Transitions API** yang memungkinkan elemen `nav-capsule` berpindah secara mulus antar dokumen.
-- **Efek**: Saat berpindah, kapsul akan melakukan transisi `liquid-liquid` (menipis/meregang saat bergerak dan kembali bulat di tujuan), memberikan kesan organik seperti air yang mengalir.
-- **CSS Animation**: Menggunakan keyframes khusus untuk mengontrol perubahan bentuk (*scaling*) selama transisi.
+### 3. Optimasi Pemuatan
+- **Lazy Loading**: Karena jumlah aset sekarang mencapai ratusan, fitur *lazy loading* memastikan browser hanya memuat gambar yang terlihat di layar, menjaga performa tetap cepat.
+- **Video Management**: Video hanya akan diputar saat kategori di-expand untuk menghemat baterai dan data.
 
 ## Cara Verifikasi
-1. Buka [index.html](file:///D:/Project App/site/index.html) di browser (disarankan Google Chrome versi terbaru untuk melihat efek View Transition terbaik).
-2. Perhatikan posisi teks "Said@taufiq" yang kini tidak lagi tertimpa menu bar.
-3. Klik menu **Karya**, **Tentang**, atau **Kontak**. Perhatikan bagaimana latar belakang kapsul biru di navigasi "mengalir" dan berubah bentuk saat berpindah ke menu baru.
+1. Buka halaman [karya.html](file:///D:/Project App/site/karya.html).
+2. Periksa kategori **Logos**: Anda akan melihat koleksi lengkap logo dan mockups.
+3. Periksa kategori **Digital Illustrations**: Pastikan ilustrasi terbaru (seperti "The Lost Existence") sudah muncul.
+4. Periksa kategori **Wood Art** dan **T-Shirt Design**: Pastikan file `.webp` muncul dengan tajam.
 
-> [!NOTE]
-> Efek transisi liquid ini adalah fitur web modern yang sangat canggih. Jika browser tidak mendukung View Transitions, navigasi akan tetap berfungsi secara instan dengan transisi fade-in yang elegan sebagai *fallback*.
+> [!TIP]
+> Semua konten baru ini secara otomatis mendukung fitur pratinjau (Lightbox). Cukup ketuk gambar apa pun untuk melihatnya dalam ukuran penuh!
