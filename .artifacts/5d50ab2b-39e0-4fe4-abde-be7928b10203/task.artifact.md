@@ -1,9 +1,7 @@
-# Task List: Portofolio Night Blue Multi-Page
+# Task List: Refinement Beranda & Navigasi Liquid
 
-- `[x]` Update `style.css` dengan tema Night Blue & Navigasi Kapsul
-- `[x]` Update `index.html` (Beranda)
-- `[x]` Create `karya.html`
-- `[x]` Create `tentang.html`
-- `[x]` Create `kontak.html`
-- `[x]` Update `script.js` untuk navigasi interaktif
-- `[x]` Verifikasi transisi antar halaman
+- `[x]` Update `style.css` (Layout Fix & Liquid Navigation)
+- `[x]` Update `index.html` (Branding & Konten Baru)
+- `[x]` Update `karya.html`, `tentang.html`, `kontak.html` (Konsistensi Navigasi)
+- `[x]` Update `script.js` (Support Animasi Smooth)
+- `[x]` Verifikasi Efek Gooey & Layout

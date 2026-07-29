@@ -36,14 +36,25 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(el);
     });
 
-    // Nav Capsule interaction (Optional: adding a slight scale on click)
+    // View Transition Logic for Smooth Page Navigation
     const navLinks = document.querySelectorAll('.nav-links a');
     navLinks.forEach(link => {
-        link.addEventListener('click', function() {
-            this.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                this.style.transform = 'scale(1)';
-            }, 100);
+        link.addEventListener('click', function(e) {
+            // Check if View Transitions are supported
+            if (!document.startViewTransition) return;
+
+            e.preventDefault();
+            const href = this.getAttribute('href');
+
+            // Perform transition
+            document.startViewTransition(async () => {
+                // Fetch the new page content (minimal SPA simulation for transition effect)
+                // For a real production app, you might use a router,
+                // but here we redirect after a tiny delay to allow the animation to start
+                // OR we can just use the native transition if the browser supports it cross-document.
+                // For this demo, let's simulate the feel by adding the transition class
+                window.location.href = href;
+            });
         });
     });
 });
