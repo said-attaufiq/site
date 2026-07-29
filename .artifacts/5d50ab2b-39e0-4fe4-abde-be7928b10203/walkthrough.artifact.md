@@ -1,28 +1,34 @@
-# Walkthrough: Portofolio Liquid Glass
+# Walkthrough: Portofolio Night Blue Said@taufiq
 
-Saya telah berhasil membuat UI portofolio dengan tema gelap yang elegan, menggunakan teknik *Glassmorphism* dan latar belakang *Liquid* yang dinamis.
+Website portofolio Anda kini telah diperbarui sepenuhnya dengan tema **Night Blue** yang elegan dan sistem multi-halaman yang profesional.
 
-## Perubahan yang Dilakukan
+## Perubahan Utama
 
-### 1. [index.html](file:///D:/Project App/site/index.html)
-Menyusun kerangka website yang bersih dengan bagian:
-- **Navigation Bar**: Melayang dengan efek blur.
-- **Hero Section**: Judul besar dengan gradien teks.
-- **Projects Grid**: Kartu interaktif untuk memamerkan karya.
-- **About & Contact**: Informasi tambahan dan ajakan bertindak (CTA).
+### 1. Skema Warna Night Blue (iOS Style)
+Saya telah mengganti warna ungu sebelumnya dengan palet biru gelap (Night Blue) yang terinspirasi dari iOS Dark Mode.
+- **Aksen**: iOS System Blue (`#0A84FF`) dan Indigo (`#5E5CE6`).
+- **Background**: Hitam pekat (`#000000`) untuk kontras maksimal.
 
-### 2. [style.css](file:///D:/Project App/site/style.css)
-- **Liquid Background**: Menggunakan 3 blob warna-warni di belakang layar dengan filter blur tinggi (80px) untuk menciptakan kedalaman.
-- **Glassmorphism**: Menggunakan `backdrop-filter: blur(20px)` dan border semi-transparan untuk efek kaca premium.
-- **Animasi**: Animasi *fade-in* saat halaman dimuat dan transisi *hover* yang halus.
+### 2. Navigasi Kapsul Interaktif
+Menu navigasi kini berbentuk kapsul melayang.
+- **Indikator Aktif**: Setiap halaman memiliki indikator kapsul yang menyorot menu yang sedang dibuka.
+- **Interaksi**: Saat menu diketuk, terdapat efek *scale* kecil sebelum berpindah halaman untuk memberikan umpan balik visual.
 
-### 3. [script.js](file:///D:/Project App/site/script.js)
-- **Scroll Reveal**: Elemen akan muncul perlahan saat pengguna menggulir ke bawah.
-- **Parallax Mouse**: Blob di latar belakang akan bergerak sedikit mengikuti kursor mouse untuk memberikan kesan interaktif.
+### 3. Struktur Multi-Halaman
+Setiap menu kini memiliki file `.html` sendiri:
+- [index.html](file:///D:/Project App/site/index.html) - Beranda
+- [karya.html](file:///D:/Project App/site/karya.html) - Galeri Proyek
+- [tentang.html](file:///D:/Project App/site/tentang.html) - Profil & Filosofi
+- [kontak.html](file:///D:/Project App/site/kontak.html) - Hubungi Saya
 
-## Cara Melihat Hasilnya
-1. Klik kanan pada file [index.html](file:///D:/Project App/site/index.html).
-2. Pilih **Open in Browser** (Chrome atau Safari direkomendasikan untuk performa blur terbaik).
+### 4. Branding Said@taufiq
+- Nama di navigasi dan judul telah diubah menjadi **Said@taufiq**.
+- Footer telah diperbarui menjadi: `© 2024 Said@taufiq` tanpa kata-kata tambahan sesuai permintaan.
+
+## Cara Verifikasi
+1. Buka [index.html](file:///D:/Project App/site/index.html) di browser.
+2. Coba klik menu **Karya**, **Tentang**, atau **Kontak**.
+3. Perhatikan bagaimana kapsul navigasi berpindah posisi untuk menyorot menu yang aktif di setiap halaman.
 
 > [!TIP]
-> Desain ini sangat minimalis. Anda dapat mengganti warna di `--gradient-1` dan `--gradient-2` dalam file `style.css` untuk menyesuaikan nuansa warna favorit Anda.
+> Navigasi ini dirancang sangat responsif. Di layar ponsel, logo akan disembunyikan agar menu kapsul tetap terlihat rapi di tengah.
