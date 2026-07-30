@@ -1,21 +1,14 @@
-# Task List - Implementasi Fitur Pencarian Global
+# Task List - Perbaikan Bug Jurnal & Pemurnian UI Pencarian
 
-- [x] Persiapan UI Navigasi (HTML)
-    - [x] Update `index.html` (tambah ikon & kontainer pencarian)
-    - [x] Update `jurnal.html`
-    - [x] Update `karya.html`
-    - [x] Update `tentang.html`
-    - [x] Update `kontak.html`
-- [x] Penambahan Gaya (CSS)
-    - [x] Styling tombol pencarian di nav
-    - [x] Styling `search-capsule` (input bar)
-    - [x] Styling `search-results-overlay`
-- [x] Implementasi Logika Pencarian (JS)
-    - [x] Kontrol buka/tutup bar pencarian
-    - [x] Global Data Indexer (Gallery + Journal)
-    - [x] Algoritma pencarian (teks, kategori, hashtag)
-    - [x] Render hasil pencarian ke UI
-- [x] Verifikasi & Finalisasi
-    - [x] Uji fungsionalitas pencarian di berbagai halaman
-    - [x] Pastikan responsif di mobile
-    - [x] Buat Walkthrough
+- [ ] Perbaikan Konten Jurnal & Stabilitas (JS)
+    - [ ] Fix `openJournalEntry` agar teks tampil konsisten
+    - [ ] Fix logika "Click Outside" untuk mencegah layout crash/putih
+    - [ ] Optimasi muat ulang data jurnal
+- [ ] Penyempurnaan Tampilan (CSS)
+    - [ ] Perbaikan warna & visibilitas `.markdown-body`
+    - [ ] Desain ulang Filter Kategori menjadi bentuk kapsul
+    - [ ] Update `search-overlay` agar tidak menutupi navigasi & search bar
+- [ ] Verifikasi Akhir
+    - [ ] Uji baca artikel jurnal
+    - [ ] Uji stabilitas klik area sembarang
+    - [ ] Uji pencarian & navigasi tetap terlihat

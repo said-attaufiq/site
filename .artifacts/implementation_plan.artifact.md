@@ -1,43 +1,40 @@
-# Implementasi Fitur Pencarian Global (Global Search)
+# Perbaikan Bug Jurnal & Pemurnian UI Pencarian
 
-Rencana ini akan menambahkan fitur pencarian ke seluruh website. Pengunjung dapat mencari karya, artikel jurnal, atau informasi lainnya melalui satu kolom pencarian yang muncul dari navigasi.
+Rencana ini bertujuan untuk memperbaiki masalah teks jurnal yang tidak muncul, memperbaiki kerusakan tata letak saat klik area sembarang, serta menyempurnakan tampilan filter jurnal dan overlay pencarian.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **Cakupan Pencarian:** Pencarian akan mencakup Judul/Kategori Galeri, Judul/Tag/Kategori Jurnal, serta isi konten Jurnal (Markdown).
-> **Penempatan:** Tombol pencarian akan diletakkan di sebelah kanan menu navigasi pada semua halaman.
-> **Interaksi:** Mengetuk ikon pencarian akan memunculkan "kapsul" input di bawah navigasi. Hasil pencarian akan ditampilkan dalam modal overlay agar tidak mengganggu tata letak halaman yang ada.
+> **Pencarian:** Overlay hasil pencarian sekarang akan muncul di bawah navigasi, sehingga menu dan bar pencarian tetap terlihat dan dapat diakses.
+> **Filter Jurnal:** Tombol kategori akan dibuat lebih konsisten dengan gaya navigasi utama (kapsul).
+> **Stabilitas Layout:** Memperbaiki konflik script yang menyebabkan tampilan rusak atau menjadi putih saat mengklik area sembarang.
 
 ## Proposed Changes
 
-### [UI & Navigation]
-
-#### [MODIFY] [index.html](file:///D:/Project App/site/index.html), [jurnal.html](file:///D:/Project App/site/jurnal.html), [karya.html](file:///D:/Project App/site/karya.html), [tentang.html](file:///D:/Project App/site/tentang.html), [kontak.html](file:///D:/Project App/site/kontak.html)
-- Menambahkan tombol ikon pencarian (`magnifying-glass-bold.svg`) di dalam `nav-content`.
-- Menambahkan struktur HTML untuk `search-capsule` (input) dan `search-results-overlay`.
-
-### [Styling]
-
-#### [MODIFY] [style.css](file:///D:/Project App/site/style.css)
-- Menambahkan styling untuk tombol pencarian (ikon transparan dengan efek hover).
-- Menambahkan styling untuk **Search Capsule**: Input bar yang muncul dengan animasi slide-down dan gaya glassmorphism.
-- Menambahkan styling untuk **Search Results Overlay**: Tampilan fullscreen transparan untuk menampilkan daftar hasil pencarian.
-
-### [Logic & Search Engine]
+### [Bug Fixes]
 
 #### [MODIFY] [script.js](file:///D:/Project App/site/script.js)
-- **Search Controller:** Logika untuk membuka/menutup kapsul pencarian.
-- **Global Indexer:** Fungsi untuk mengumpulkan data dari `galleryData` dan memuat metadata dari `jurnal-manifest.json` ke dalam index pencarian saat pertama kali dicari.
-- **Search Logic:** Algoritma pencarian berbasis teks yang mencocokkan kata kunci dengan judul, kategori, hashtag, dan konten.
-- **Result Renderer:** Menampilkan hasil pencarian yang dikelompokkan berdasarkan tipe (Karya atau Jurnal).
+- **Fix Jurnal Content:** Memastikan konten Markdown dimuat dengan benar sebelum ditampilkan di modal. Menambahkan pengecekan jika konten kosong.
+- **Fix Layout Crash:** Memperbaiki logika "Click Outside" agar tidak mengganggu elemen global lainnya dan mencegah perilaku tidak terduga pada `body` atau `main`.
+- **Fix Search Interaction:** Menyesuaikan z-index dan posisi tampilan hasil pencarian.
+
+#### [MODIFY] [style.css](file:///D:/Project App/site/style.css)
+- **Fix Text Visibility:** Memastikan warna teks di dalam `.markdown-body` kontras dengan latar belakang modal.
+- **Fix Overlapping Nav:** Menghapus atau menyesuaikan properti CSS yang menyebabkan teks menu bertumpuk saat modal aktif.
+
+### [UI Enhancements]
+
+#### [MODIFY] [style.css](file:///D:/Project App/site/style.css)
+- **Search Overlay:** Mengubah `top: 15vh` menjadi posisi yang dinamis tepat di bawah navigasi kapsul. Mengatur latar belakang agar lebih transparan (blur) tanpa menutupi navigasi.
+- **Journal Filters:** Mendesain ulang `.filter-btn` agar memiliki bentuk kapsul yang identik dengan menu utama.
+
+#### [MODIFY] [jurnal.html](file:///D:/Project App/site/jurnal.html)
+- Penyesuaian struktur jika diperlukan untuk mendukung filter yang lebih rapi.
 
 ## Verification Plan
 
 ### Manual Verification
-1. Klik ikon pencarian di navigasi halaman mana pun.
-2. Pastikan kolom input muncul di bawah navigasi.
-3. Ketik kata kunci (misal: "puisi", "logo", atau hashtag tertentu).
-4. Verifikasi hasil pencarian muncul secara real-time atau setelah menekan Enter.
-5. Klik pada hasil pencarian untuk diarahkan ke konten yang sesuai.
-6. Uji responsivitas kolom pencarian di layar mobile.
+1. **Uji Jurnal:** Klik "Baca Selengkapnya" dan pastikan teks Markdown muncul dengan jelas dan terbaca.
+2. **Uji Klik Global:** Klik di luar area modal/search berkali-kali dan pastikan layout website tetap stabil (tidak menjadi putih atau bertumpuk).
+3. **Uji Pencarian:** Lakukan pencarian dan pastikan navigasi atas (Menu & Search Bar) tetap terlihat di atas hasil pencarian.
+4. **Uji Filter:** Pastikan semua kategori muncul sebagai tombol kapsul tersendiri.

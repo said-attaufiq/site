@@ -300,7 +300,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- JURNAL LOGIC SHARED FUNCTIONS ---
     function parseFrontmatter(text) {
-        const regex = /^---\s*\n([\s\S]*?)\n---\s*\n/;
+        // Robust regex for both \n and \r\n line endings
+        const regex = /^---\s*[\r\n]+([\s\S]*?)[\r\n]+---\s*[\r\n]+/;
         const match = text.match(regex);
         if (!match) return { content: text, metadata: {} };
 
@@ -308,7 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const content = text.replace(match[0], '');
         const metadata = {};
 
-        yamlBlock.split('\n').forEach(line => {
+        yamlBlock.split(/[\r\n]+/).forEach(line => {
             const separatorIndex = line.indexOf(':');
             if (separatorIndex !== -1) {
                 const key = line.substring(0, separatorIndex).trim();
@@ -330,20 +331,31 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!modal || !body) return;
 
         try {
-            // If full content is already passed from search index
-            if (entry.fullContent) {
-                body.innerHTML = marked.parse(entry.fullContent);
-            } else {
+            let contentToRender = entry.fullContent;
+
+            // If full content is not available (e.g. from gallery page search), fetch it
+            if (!contentToRender) {
                 const response = await fetch(`content/jurnal/${entry.file}`);
+                if (!response.ok) throw new Error("Gagal mengambil file");
                 const text = await response.text();
-                const { content } = parseFrontmatter(text);
-                body.innerHTML = marked.parse(content);
+                const parsed = parseFrontmatter(text);
+                contentToRender = parsed.content;
             }
 
+            // Render markdown using marked.js
+            body.innerHTML = marked.parse(contentToRender);
+
+            // Show modal
             modal.style.display = 'flex';
             document.body.style.overflow = 'hidden';
+
+            // Reset scroll position
+            const modalContent = modal.querySelector('.modal-content');
+            if (modalContent) modalContent.scrollTop = 0;
+
         } catch (error) {
             console.error('Error loading journal:', error);
+            alert("Maaf, gagal memuat isi tulisan.");
         }
     }
 
@@ -355,7 +367,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const res = await fetch('content/jurnal/jurnal-manifest.json');
                 const fileList = await res.json();
                 if (fileList.length > 0) {
-                    const latestFile = fileList[0]; // Get the first one
+                    const latestFile = fileList[0];
                     const postRes = await fetch(`content/jurnal/${latestFile}`);
                     const text = await postRes.text();
                     const { metadata } = parseFrontmatter(text);
@@ -396,25 +408,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const manifestResponse = await fetch('content/jurnal/jurnal-manifest.json');
+            if (!manifestResponse.ok) throw new Error("Manifest not found");
             const fileList = await manifestResponse.json();
 
             const entryPromises = fileList.map(async (filename) => {
-                const res = await fetch(`content/jurnal/${filename}`);
-                const text = await res.text();
-                const { content, metadata } = parseFrontmatter(text);
-                return {
-                    ...metadata,
-                    file: filename,
-                    fullContent: content
-                };
+                try {
+                    const res = await fetch(`content/jurnal/${filename}`);
+                    if (!res.ok) return null;
+                    const text = await res.text();
+                    const { content, metadata } = parseFrontmatter(text);
+                    return {
+                        ...metadata,
+                        file: filename,
+                        fullContent: content
+                    };
+                } catch (err) {
+                    console.error("Error loading file", filename, err);
+                    return null;
+                }
             });
 
-            allEntries = await Promise.resolve(Promise.all(entryPromises));
+            const results = await Promise.all(entryPromises);
+            allEntries = results.filter(entry => entry !== null);
+
             renderJurnal(allEntries);
             renderFilters(allEntries);
         } catch (error) {
             console.error('Error loading journal manifest:', error);
-            jurnalRoot.innerHTML = '<p>Gagal memuat daftar jurnal.</p>';
+            jurnalRoot.innerHTML = '<p style="text-align:center; padding: 2rem;">Gagal memuat daftar jurnal.</p>';
         }
     }
 
@@ -486,6 +507,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchToggle = document.getElementById('search-toggle');
     const searchCapsule = document.getElementById('search-capsule');
     const searchInput = document.getElementById('search-input');
+    const searchExecute = document.getElementById('search-execute');
     const searchOverlay = document.getElementById('search-overlay');
     const searchResults = document.getElementById('search-results');
     const searchClose = document.getElementById('search-close');
@@ -495,7 +517,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function buildSearchIndex() {
         if (indexBuilt) return;
-
         // 1. Index Gallery Data
         galleryData.forEach(cat => {
             searchIndex.push({
@@ -508,16 +529,14 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // 2. Index Journal Data (Fetch all entries)
+        // 2. Index Journal Data
         try {
             const manifestRes = await fetch('content/jurnal/jurnal-manifest.json');
             const fileList = await manifestRes.json();
-
             for (const filename of fileList) {
                 const res = await fetch(`content/jurnal/${filename}`);
                 const text = await res.text();
                 const { content, metadata } = parseFrontmatter(text);
-
                 searchIndex.push({
                     type: 'Jurnal',
                     title: metadata.title || filename,
@@ -528,53 +547,77 @@ document.addEventListener('DOMContentLoaded', () => {
                     entry: { ...metadata, file: filename, fullContent: content }
                 });
             }
-        } catch (e) {
-            console.error("Search index build error:", e);
-        }
-
+        } catch (e) { console.error("Search index error:", e); }
         indexBuilt = true;
     }
 
-    if (searchToggle) {
+    function toggleSearch() {
+        if (!searchCapsule) return;
+        const isActive = searchCapsule.classList.contains('active');
+        if (isActive) {
+            searchCapsule.classList.remove('active');
+            searchCapsule.classList.add('hiding');
+            setTimeout(() => {
+                searchCapsule.classList.remove('hiding');
+                searchCapsule.style.display = 'none';
+            }, 300);
+        } else {
+            searchCapsule.style.display = 'block';
+            searchCapsule.classList.add('active');
+            searchInput.focus();
+            buildSearchIndex();
+        }
+    }
+
+    function triggerSearch() {
+        if (!searchInput) return;
+        const query = searchInput.value.toLowerCase().trim();
+        if (query.length > 0) {
+            performSearch(query);
+        }
+    }
+
+    if (searchToggle && searchCapsule && searchInput) {
         searchToggle.addEventListener('click', (e) => {
             e.stopPropagation();
-            const isVisible = searchCapsule.style.display === 'block';
-            searchCapsule.style.display = isVisible ? 'none' : 'block';
-            if (!isVisible) {
-                searchInput.focus();
-                buildSearchIndex();
-            }
+            toggleSearch();
         });
 
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase().trim();
-            if (query.length > 1) {
-                performSearch(query);
-            } else {
-                searchOverlay.style.display = 'none';
-            }
-        });
+        if (searchExecute) {
+            searchExecute.addEventListener('click', (e) => {
+                e.stopPropagation();
+                triggerSearch();
+            });
+        }
 
         searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
-                performSearch(searchInput.value.toLowerCase().trim());
+                triggerSearch();
             }
         });
+
+        // Click outside to close
+        document.addEventListener('click', (e) => {
+            if (!searchCapsule.classList.contains('active')) return;
+
+            const isClickInside = searchCapsule.contains(e.target) || searchToggle.contains(e.target);
+            if (!isClickInside) {
+                toggleSearch();
+            }
+        });
+
+        // Prevent closing when clicking inside input
+        searchCapsule.addEventListener('click', (e) => e.stopPropagation());
     }
 
     function performSearch(query) {
         const filtered = searchIndex.filter(item => {
-            const title = item.title.toLowerCase();
-            const category = item.category.toLowerCase();
-            const tags = item.tags.join(' ').toLowerCase();
-            const content = item.content.toLowerCase();
-
-            return title.includes(query) ||
-                   category.includes(query) ||
-                   tags.includes(query) ||
-                   content.includes(query);
+            const title = (item.title || "").toLowerCase();
+            const category = (item.category || "").toLowerCase();
+            const tags = (item.tags || []).join(' ').toLowerCase();
+            const content = (item.content || "").toLowerCase();
+            return title.includes(query) || category.includes(query) || tags.includes(query) || content.includes(query);
         });
-
         renderSearchResults(filtered);
     }
 
@@ -593,7 +636,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
                 div.onclick = () => {
                     if (res.type === 'Jurnal' && window.location.pathname.includes('jurnal.html')) {
-                        // Open journal modal if already on journal page
                         openJournalEntry(res.entry);
                         closeSearch();
                     } else {
@@ -608,7 +650,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function closeSearch() {
         searchOverlay.style.display = 'none';
-        searchCapsule.style.display = 'none';
+        if (searchCapsule.classList.contains('active')) {
+            toggleSearch();
+        }
         searchInput.value = '';
     }
 
