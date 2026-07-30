@@ -298,6 +298,328 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- JURNAL LOGIC SHARED FUNCTIONS ---
+    function parseFrontmatter(text) {
+        const regex = /^---\s*\n([\s\S]*?)\n---\s*\n/;
+        const match = text.match(regex);
+        if (!match) return { content: text, metadata: {} };
+
+        const yamlBlock = match[1];
+        const content = text.replace(match[0], '');
+        const metadata = {};
+
+        yamlBlock.split('\n').forEach(line => {
+            const separatorIndex = line.indexOf(':');
+            if (separatorIndex !== -1) {
+                const key = line.substring(0, separatorIndex).trim();
+                let value = line.substring(separatorIndex + 1).trim();
+
+                if (value.startsWith('[') && value.endsWith(']')) {
+                    value = value.slice(1, -1).split(',').map(v => v.trim());
+                }
+                metadata[key] = value;
+            }
+        });
+
+        return { content, metadata };
+    }
+
+    async function openJournalEntry(entry) {
+        const modal = document.getElementById('jurnal-modal');
+        const body = document.getElementById('journal-article-body');
+        if (!modal || !body) return;
+
+        try {
+            // If full content is already passed from search index
+            if (entry.fullContent) {
+                body.innerHTML = marked.parse(entry.fullContent);
+            } else {
+                const response = await fetch(`content/jurnal/${entry.file}`);
+                const text = await response.text();
+                const { content } = parseFrontmatter(text);
+                body.innerHTML = marked.parse(content);
+            }
+
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        } catch (error) {
+            console.error('Error loading journal:', error);
+        }
+    }
+
+    // --- HOME PAGE LATEST JOURNAL ---
+    const latestJournalContainer = document.getElementById('latest-journal-container');
+    if (latestJournalContainer) {
+        async function loadLatestJournal() {
+            try {
+                const res = await fetch('content/jurnal/jurnal-manifest.json');
+                const fileList = await res.json();
+                if (fileList.length > 0) {
+                    const latestFile = fileList[0]; // Get the first one
+                    const postRes = await fetch(`content/jurnal/${latestFile}`);
+                    const text = await postRes.text();
+                    const { metadata } = parseFrontmatter(text);
+
+                    latestJournalContainer.innerHTML = `
+                        <h2 style="margin-bottom: 2rem; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 0.2em; opacity: 0.6;">Tulisan Terbaru</h2>
+                        <div class="latest-post-card glass-card">
+                            <div class="latest-post-img">
+                                <img src="${metadata.thumbnail || 'assets/best/best_logo.jpg'}" alt="${metadata.title}">
+                            </div>
+                            <div class="latest-post-content">
+                                <div class="jurnal-card-meta">${metadata.category || 'Umum'} • ${metadata.date || ''}</div>
+                                <h3 class="latest-post-title">${metadata.title || latestFile}</h3>
+                                <p class="latest-post-excerpt">${metadata.excerpt || ''}</p>
+                                <a href="jurnal.html" class="btn-primary" style="font-size: 0.85rem;">Baca Selengkapnya</a>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (e) {
+                console.error("Error loading latest journal:", e);
+            }
+        }
+        loadLatestJournal();
+    }
+
+    // --- JURNAL PAGE LOGIC ---
+    const jurnalRoot = document.getElementById('jurnal-root');
+    const jurnalModal = document.getElementById('jurnal-modal');
+    const journalArticleBody = document.getElementById('journal-article-body');
+    const jurnalModalClose = document.querySelector('#jurnal-modal .modal-close');
+    const filterContainer = document.getElementById('jurnal-filters');
+
+    let allEntries = [];
+
+    async function loadJurnal() {
+        if (!jurnalRoot) return;
+
+        try {
+            const manifestResponse = await fetch('content/jurnal/jurnal-manifest.json');
+            const fileList = await manifestResponse.json();
+
+            const entryPromises = fileList.map(async (filename) => {
+                const res = await fetch(`content/jurnal/${filename}`);
+                const text = await res.text();
+                const { content, metadata } = parseFrontmatter(text);
+                return {
+                    ...metadata,
+                    file: filename,
+                    fullContent: content
+                };
+            });
+
+            allEntries = await Promise.resolve(Promise.all(entryPromises));
+            renderJurnal(allEntries);
+            renderFilters(allEntries);
+        } catch (error) {
+            console.error('Error loading journal manifest:', error);
+            jurnalRoot.innerHTML = '<p>Gagal memuat daftar jurnal.</p>';
+        }
+    }
+
+    function renderJurnal(entries) {
+        jurnalRoot.innerHTML = '';
+        entries.forEach((entry) => {
+            const card = document.createElement('div');
+            card.className = 'jurnal-card glass-card fade-in';
+
+            const tagsHtml = entry.tags ?
+                `<div class="jurnal-tags">${entry.tags.map(tag => `<span class="tag-chip">#${tag}</span>`).join('')}</div>` : '';
+
+            card.innerHTML = `
+                <div>
+                    <div class="jurnal-card-meta">${entry.category || 'Umum'} • ${entry.date || ''}</div>
+                    <h2 class="jurnal-card-title">${entry.title || entry.file}</h2>
+                    ${tagsHtml}
+                    <p class="jurnal-card-excerpt">${entry.excerpt || ''}</p>
+                </div>
+                <div class="btn-primary" style="margin-top: 1rem; font-size: 0.8rem; padding: 0.5rem 1.5rem; width: fit-content;">Baca Selengkapnya</div>
+            `;
+            card.addEventListener('click', () => openJournalEntry(entry));
+            jurnalRoot.appendChild(card);
+        });
+    }
+
+    function renderFilters(entries) {
+        if (!filterContainer) return;
+
+        const categories = ['Semua', ...new Set(entries.map(e => e.category).filter(Boolean))];
+        filterContainer.innerHTML = '';
+
+        categories.forEach(cat => {
+            const btn = document.createElement('button');
+            btn.className = 'filter-btn' + (cat === 'Semua' ? ' active' : '');
+            btn.innerText = cat;
+            btn.onclick = () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const filtered = cat === 'Semua' ?
+                    allEntries :
+                    allEntries.filter(e => e.category === cat);
+                renderJurnal(filtered);
+            };
+            filterContainer.appendChild(btn);
+        });
+    }
+
+    if (jurnalRoot) {
+        loadJurnal();
+
+        if (jurnalModalClose) {
+            jurnalModalClose.addEventListener('click', () => {
+                jurnalModal.style.display = 'none';
+                document.body.style.overflow = '';
+            });
+        }
+
+        window.addEventListener('click', (e) => {
+            if (e.target === jurnalModal) {
+                jurnalModal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        });
+    }
+
+    // --- GLOBAL SEARCH LOGIC ---
+    const searchToggle = document.getElementById('search-toggle');
+    const searchCapsule = document.getElementById('search-capsule');
+    const searchInput = document.getElementById('search-input');
+    const searchOverlay = document.getElementById('search-overlay');
+    const searchResults = document.getElementById('search-results');
+    const searchClose = document.getElementById('search-close');
+
+    let searchIndex = [];
+    let indexBuilt = false;
+
+    async function buildSearchIndex() {
+        if (indexBuilt) return;
+
+        // 1. Index Gallery Data
+        galleryData.forEach(cat => {
+            searchIndex.push({
+                type: 'Karya',
+                title: cat.title,
+                category: 'Gallery',
+                tags: [],
+                content: cat.files.join(' '),
+                link: `karya.html?category=${encodeURIComponent(cat.title)}`
+            });
+        });
+
+        // 2. Index Journal Data (Fetch all entries)
+        try {
+            const manifestRes = await fetch('content/jurnal/jurnal-manifest.json');
+            const fileList = await manifestRes.json();
+
+            for (const filename of fileList) {
+                const res = await fetch(`content/jurnal/${filename}`);
+                const text = await res.text();
+                const { content, metadata } = parseFrontmatter(text);
+
+                searchIndex.push({
+                    type: 'Jurnal',
+                    title: metadata.title || filename,
+                    category: metadata.category || 'Umum',
+                    tags: metadata.tags || [],
+                    content: content,
+                    link: `jurnal.html`,
+                    entry: { ...metadata, file: filename, fullContent: content }
+                });
+            }
+        } catch (e) {
+            console.error("Search index build error:", e);
+        }
+
+        indexBuilt = true;
+    }
+
+    if (searchToggle) {
+        searchToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isVisible = searchCapsule.style.display === 'block';
+            searchCapsule.style.display = isVisible ? 'none' : 'block';
+            if (!isVisible) {
+                searchInput.focus();
+                buildSearchIndex();
+            }
+        });
+
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            if (query.length > 1) {
+                performSearch(query);
+            } else {
+                searchOverlay.style.display = 'none';
+            }
+        });
+
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                performSearch(searchInput.value.toLowerCase().trim());
+            }
+        });
+    }
+
+    function performSearch(query) {
+        const filtered = searchIndex.filter(item => {
+            const title = item.title.toLowerCase();
+            const category = item.category.toLowerCase();
+            const tags = item.tags.join(' ').toLowerCase();
+            const content = item.content.toLowerCase();
+
+            return title.includes(query) ||
+                   category.includes(query) ||
+                   tags.includes(query) ||
+                   content.includes(query);
+        });
+
+        renderSearchResults(filtered);
+    }
+
+    function renderSearchResults(results) {
+        searchResults.innerHTML = '';
+        if (results.length === 0) {
+            searchResults.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-secondary);">Tidak ada hasil ditemukan.</div>';
+        } else {
+            results.forEach(res => {
+                const div = document.createElement('div');
+                div.className = 'search-result-item';
+                div.innerHTML = `
+                    <div class="result-type">${res.type} • ${res.category}</div>
+                    <div class="result-title">${res.title}</div>
+                    <div class="result-meta">${res.tags.length > 0 ? res.tags.map(t => '#' + t).join(' ') : ''}</div>
+                `;
+                div.onclick = () => {
+                    if (res.type === 'Jurnal' && window.location.pathname.includes('jurnal.html')) {
+                        // Open journal modal if already on journal page
+                        openJournalEntry(res.entry);
+                        closeSearch();
+                    } else {
+                        window.location.href = res.link;
+                    }
+                };
+                searchResults.appendChild(div);
+            });
+        }
+        searchOverlay.style.display = 'flex';
+    }
+
+    function closeSearch() {
+        searchOverlay.style.display = 'none';
+        searchCapsule.style.display = 'none';
+        searchInput.value = '';
+    }
+
+    if (searchClose) {
+        searchClose.onclick = closeSearch;
+    }
+
+    window.addEventListener('click', (e) => {
+        if (e.target === searchOverlay) closeSearch();
+    });
+
     // Navigation Logic
     const navLinks = document.querySelectorAll('.nav-links a');
     navLinks.forEach(link => {

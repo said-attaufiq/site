@@ -1,0 +1,21 @@
+# Task List - Implementasi Fitur Pencarian Global
+
+- [x] Persiapan UI Navigasi (HTML)
+    - [x] Update `index.html` (tambah ikon & kontainer pencarian)
+    - [x] Update `jurnal.html`
+    - [x] Update `karya.html`
+    - [x] Update `tentang.html`
+    - [x] Update `kontak.html`
+- [x] Penambahan Gaya (CSS)
+    - [x] Styling tombol pencarian di nav
+    - [x] Styling `search-capsule` (input bar)
+    - [x] Styling `search-results-overlay`
+- [x] Implementasi Logika Pencarian (JS)
+    - [x] Kontrol buka/tutup bar pencarian
+    - [x] Global Data Indexer (Gallery + Journal)
+    - [x] Algoritma pencarian (teks, kategori, hashtag)
+    - [x] Render hasil pencarian ke UI
+- [x] Verifikasi & Finalisasi
+    - [x] Uji fungsionalitas pencarian di berbagai halaman
+    - [x] Pastikan responsif di mobile
+    - [x] Buat Walkthrough

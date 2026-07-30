@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Said@taufiq | Beranda</title>
+    <title>Jurnal | Said@taufiq</title>
     <link rel="icon" type="image/png" href="assets/icons/logo_black.png">
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Markdown Parser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
     <div class="liquid-bg">
@@ -23,8 +25,8 @@
                 <img src="assets/icons/logo_white.png" alt="Logo" class="nav-logo">
             </a>
             <ul class="nav-links">
-                <li><a href="index.html" class="active">Beranda</a></li>
-                <li><a href="jurnal.html">Jurnal</a></li>
+                <li><a href="index.html">Beranda</a></li>
+                <li><a href="jurnal.html" class="active">Jurnal</a></li>
                 <li><a href="karya.html">Karya</a></li>
                 <li><a href="tentang.html">Tentang</a></li>
                 <li><a href="kontak.html">Kontak</a></li>
@@ -49,34 +51,28 @@
         </div>
     </div>
 
-    <main>
-        <section class="hero-section">
-            <div class="glass-card hero-card fade-in">
-                <h1>Said<span class="gradient-text">@taufiq</span></h1>
-                <div class="sub-headline">creator, artist, writer, developer</div>
-                <p class="philosophy">Sebuah karya tidak berhenti pada apa yang terlihat, tetapi hidup melalui ide, cerita, dan pengalaman dibaliknya.</p>
-                <div class="best-works-wrapper fade-in">
-                    <div class="carousel-container-home glass-card">
-                        <div class="carousel-nav-home prev-home">
-                            <svg viewBox="0 0 256 256"><path d="M165.66,202.34a8,8,0,0,1-11.32,11.32l-80-80a8,8,0,0,1,0-11.32l80-80a8,8,0,0,1,11.32,11.32L91.31,128Z"></path></svg>
-                        </div>
-                        <div class="carousel-slides-home" id="home-carousel-slides">
-                            <!-- Slides will be injected by JS -->
-                        </div>
-                        <div class="carousel-nav-home next-home">
-                            <svg viewBox="0 0 256 256"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"></path></svg>
-                        </div>
-                        <div class="carousel-dots-home" id="home-carousel-dots"></div>
-                    </div>
-                </div>
+    <main class="section-container">
+        <h1 class="fade-in" style="margin-bottom: 2rem;">Jurnal</h1>
 
-                <!-- Latest Journal Post Section -->
-                <div id="latest-journal-container" class="fade-in" style="margin-top: 4rem; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto;">
-                    <!-- Latest post will be injected here -->
-                </div>
-            </div>
-        </section>
+        <!-- Category Filters -->
+        <div id="jurnal-filters" class="filter-container fade-in">
+            <!-- Filter buttons will be injected here -->
+        </div>
+
+        <div id="jurnal-root" class="jurnal-grid">
+            <!-- Jurnal cards will be injected here by script.js -->
+        </div>
     </main>
+
+    <!-- Modal untuk membaca jurnal -->
+    <div id="jurnal-modal" class="modal">
+        <span class="modal-close">&times;</span>
+        <div class="modal-content journal-reader-content glass-card">
+            <div id="journal-article-body" class="markdown-body">
+                <!-- Markdown content will be rendered here -->
+            </div>
+        </div>
+    </div>
 
     <footer>
         <p>&copy; 2024 Said@taufiq</p>

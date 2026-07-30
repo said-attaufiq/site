@@ -24,12 +24,30 @@
             </a>
             <ul class="nav-links">
                 <li><a href="index.html">Beranda</a></li>
+                <li><a href="jurnal.html">Jurnal</a></li>
                 <li><a href="karya.html">Karya</a></li>
                 <li><a href="tentang.html">Tentang</a></li>
                 <li><a href="kontak.html" class="active">Kontak</a></li>
             </ul>
+            <div class="nav-actions">
+                <button id="search-toggle" class="search-btn">
+                    <img src="assets/icons/magnifying-glass-bold.svg" alt="Search">
+                </button>
+            </div>
+        </div>
+        <!-- Search Capsule -->
+        <div id="search-capsule" class="search-capsule">
+            <input type="text" id="search-input" placeholder="Cari karya, jurnal, hashtag...">
         </div>
     </nav>
+
+    <!-- Search Overlay -->
+    <div id="search-overlay" class="modal search-overlay">
+        <span class="modal-close" id="search-close">&times;</span>
+        <div class="search-results-wrap">
+            <div id="search-results" class="search-results-grid"></div>
+        </div>
+    </div>
 
     <main class="section-container">
         <div class="glass-card fade-in" style="text-align: center; max-width: 600px; margin: 0 auto;">
