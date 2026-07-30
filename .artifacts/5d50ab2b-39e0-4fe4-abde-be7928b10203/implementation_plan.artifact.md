@@ -1,40 +1,39 @@
-# Rencana Implementasi: Sinkronisasi Seluruh Konten Galeri Karya
+# Rencana Implementasi: Refinement Animasi & Navigasi Galeri
 
-Memperbaiki masalah di mana tidak semua gambar dan video muncul di halaman **Karya** dengan memperbarui data galeri agar mencakup seluruh file yang ada di folder aset.
+Meningkatkan kualitas animasi navigasi utama, menambahkan kontrol horizontal pada galeri karya, dan memperbaiki sinkronisasi konten.
 
 ## User Review Required
 
-> [!NOTE]
-> Karena jumlah file yang akan ditampilkan sangat banyak (terutama di kategori Logos dan Digital Illustrations), saya telah mengaktifkan *lazy loading* agar performa browser tetap terjaga saat memuat ratusan aset.
+> [!IMPORTANT]
+> Efek "squishy" pada menu kiri atas akan diimplementasikan sebagai indikator halaman aktif yang muncul dengan animasi elastis saat berpindah.
+>
+> Navigasi horizontal di halaman Karya akan menggunakan tombol panah melayang dan indikator titik di bagian bawah.
 
 ## Proposed Changes
 
 ### [Web Frontend]
 
-#### [MODIFY] [script.js](file:///D:/Project App/site/script.js)
-*   Memperbarui objek `galleryData` dengan daftar lengkap file untuk ke-13 kategori.
-*   Memastikan ekstensi file (seperti `.webp`, `.jpg`, `.mp4`) sesuai dengan file fisik yang ada di direktori `assets/`.
-*   Menghapus pembatasan manual pada jumlah file yang ditampilkan.
+#### [MODIFY] [style.css](file:///D:/Project App/site/style.css)
+*   **Elastic Capsule**: Mengubah easing transisi navigasi menjadi `cubic-bezier(0.68, -0.6, 0.32, 1.6)` untuk efek membal/elastis.
+*   **Squishy Menu**: Menambahkan elemen penanda di pojok kiri atas navbar yang menunjukkan menu aktif dengan animasi "squishy".
+*   **Gallery Controls**:
+    *   Menambahkan tombol `caret-left` dan `caret-right` yang melayang di sisi galeri.
+    *   Indikator titik (dots) di bawah galeri, dengan titik tengah yang lebih besar secara dinamis.
+*   **Lightbox Navigation**: Menambahkan tombol navigasi kiri/kanan di dalam modal pratinjau.
 
-## Kategori yang Diperbarui:
-1.  **Apps**: 3 video.
-2.  **Logos**: ~48 gambar (termasuk mockups dan ikon).
-3.  **Videos Opening**: 6 video.
-4.  **Animation**: 6 video.
-5.  **Speed Paint**: 13 video.
-6.  **Painting**: 16 gambar.
-7.  **Wood Art**: 6 gambar/webp.
-8.  **Pencil Art**: 13 gambar.
-9.  **Smudge Art**: 7 gambar.
-10. **Vector Art**: 9 gambar/webp.
-11. **Glitter Art**: 4 gambar.
-12. **T-Shirt Design**: 9 gambar/webp.
-13. **Digital Illustrations**: ~34 gambar.
+#### [MODIFY] [script.js](file:///D:/Project App/site/script.js)
+*   **Carousel Logic**: Menambahkan fungsi untuk scroll galeri secara programatik saat panah diketuk.
+*   **Dots Sync**: Menambahkan *scroll listener* untuk memperbarui titik indikator berdasarkan posisi scroll galeri.
+*   **Preview Gallery**: Mengubah logika pratinjau agar bisa berpindah antar item dalam kategori yang sama menggunakan panah keyboard atau tombol UI.
+*   **Fix Content**: Memastikan penanganan nama file dengan karakter khusus (spasi, kurung) ditangani dengan benar untuk kategori Vector dan T-Shirt.
 
 ## Verification Plan
 
 ### Manual Verification
-*   Buka halaman **Karya**.
-*   Buka kategori **Logos** dan **Digital Illustrations**: Pastikan jumlah item yang muncul jauh lebih banyak dari sebelumnya.
-*   Cek kategori **Wood Art** dan **T-Shirt Design**: Pastikan file dengan ekstensi `.webp` muncul dengan benar.
-*   Pastikan fitur pratinjau (lightbox) tetap berfungsi untuk file-file baru ini.
+*   Buka menu bar, berpindah antar halaman: pastikan kapsul bergerak elastis tanpa kedipan.
+*   Halaman Karya:
+    *   Klik panah kiri/kanan pada kategori: galeri harus bergeser.
+    *   Perhatikan titik indikator: pastikan titik yang aktif membesar.
+*   Mode Preview:
+    *   Klik satu gambar, lalu klik panah di dalam modal: pastikan berpindah ke karya selanjutnya dalam kategori yang sama.
+*   Cek kategori Vector & T-Shirt: Pastikan gambar muncul semua.

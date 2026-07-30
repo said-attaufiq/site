@@ -1,7 +1,8 @@
-# Task List: Sinkronisasi Konten & Perbaikan Ikon
+# Task List: Refinement Animasi & Navigasi Galeri (Fixed)
 
-- `[x]` Audit seluruh file di direktori assets (13 kategori)
-- `[x]` Update `script.js` dengan daftar lengkap file & ekstensi yang benar
-- `[x]` Implementasi Ikon Caret Up/Down dari SVG Path secara dinamis
-- `[x]` Perbaikan bug "5 kategori" (Sinkronisasi penuh 13 kategori)
-- `[x]` Verifikasi fitur pratinjau untuk semua konten baru
+- `[x]` Hapus indikator squishy & perbaikan posisi logo
+- `[x]` Update animasi navigasi (smooth slide, no flicker)
+- `[x]` Ubah warna kapsul aktif ke Blue iOS Dark Theme solid
+- `[x]` Sembunyikan kontrol carousel (panah & dots) saat mode Expanded (Grid)
+- `[x]` Implementasi toggle icon Caret Down -> Caret Up
+- `[x]` Perbaikan bug konten Vector & T-Shirt Design
