@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Said@taufiq</title>
+    <link rel="icon" type="image/png" href="assets/icons/logo_black.png">
+    <link rel="stylesheet" href="style.css?v=1.0.5">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Markdown Parser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div class="liquid-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <nav class="glass-nav">
+        <div class="nav-content">
+            <a href="index.html" class="logo">
+                <img src="assets/icons/logo_white.png" alt="Logo" class="nav-logo">
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-icon-home" title="Beranda"><img src="assets/icons/house-line-bold.svg" alt="Beranda"></a></li>
+                <li><a href="paper-world.html">Paper World</a></li>
+                <li><a href="jurnal.html">Jurnal</a></li>
+                <li><a href="karya.html">Karya</a></li>
+                <li><a href="tentang.html">Tentang</a></li>
+                <li><a href="kontak.html">Kontak</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button id="search-toggle" class="search-btn">
+                    <img src="assets/icons/magnifying-glass-bold.svg" alt="Search">
+                </button>
+            </div>
+        </div>
+        <!-- Search Capsule -->
+        <div id="search-capsule" class="search-capsule">
+            <div class="search-input-wrap">
+                <input type="text" id="search-input" placeholder="Cari karya, jurnal, hashtag..." aria-label="Cari">
+                <button id="search-execute" class="search-icon-inside" aria-label="Mulai cari">
+                    <img src="assets/icons/magnifying-glass-bold.svg" alt="Search">
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Search Overlay -->
+    <div id="search-overlay" class="modal search-overlay">
+        <span class="modal-close" id="search-close">&times;</span>
+        <div class="search-results-wrap">
+            <div id="search-results" class="search-results-grid"></div>
+        </div>
+    </div>
+
+    <!-- Modal untuk membaca jurnal -->
+    <div id="jurnal-modal" class="modal">
+        <span class="modal-close">&times;</span>
+        <div class="modal-content journal-reader-content glass-card">
+            <div id="journal-article-body" class="markdown-body">
+                <!-- Markdown content will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <main class="section-container">
+        <h1 class="fade-in" style="margin-bottom: 2rem;">Said@taufiq</h1>
+
+        <!-- Home carousel (populated by script.js) -->
+        <div id="home-carousel-slides" class="home-carousel">
+            <!-- slides injected by script.js -->
+        </div>
+
+        <!-- Latest journal preview (populated by script.js) -->
+        <div id="latest-journal-container" style="margin-top:3rem;"></div>
+
+    </main>
+
+    <!-- Lightbox / Preview Modal -->
+    <div id="preview-modal" class="modal">
+        <span class="modal-close">&times;</span>
+        <div class="modal-content">
+            <div id="modal-media-container"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Hak cipta &copy; 2026 Said@taufiq.</p>
+    </footer>
+
+    <script src="script.js?v=1.0.5"></script>
+</body>
+</html>
