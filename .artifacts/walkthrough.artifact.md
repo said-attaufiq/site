@@ -1,27 +1,26 @@
-# Walkthrough - Restorasi Layout & Perbaikan Stabilitas (Final)
+# Walkthrough - Restorasi Layout & Perbaikan Bug (Final Tidy)
 
-Seluruh masalah tampilan telah diperbaiki dengan pendekatan yang lebih stabil. Website kini kembali rapi, data karya dipulihkan, dan fitur Jurnal serta Pencarian berjalan sempurna.
+Website Anda telah dikembalikan ke struktur yang rapi dan stabil. Saya telah menghapus perubahan yang tidak diminta dan memastikan semua konten muncul dengan benar.
 
-## Perbaikan yang Dilakukan
+## Perbaikan & Restorasi Utama
 
-### 1. Perbaikan Teks Jurnal (Visibilitas)
-- **Masalah:** Teks artikel tidak muncul atau samar.
-- **Solusi:** Saya telah mengunci warna teks jurnal ke **Putih Solid** (`#FFFFFF`) melalui CSS dan JavaScript. Teks sekarang dipastikan muncul dengan kontras tinggi di atas latar belakang gelap.
+### 1. Navigasi Kembali ke Semula
+- **Beranda:** Kembali menggunakan teks "Beranda" (bukan ikon) untuk kemudahan navigasi.
+- **Paper World Dihapus:** Menu dan file "Paper World" telah dihapus karena tidak diminta.
+- **Urutan Menu:** Beranda, Jurnal, Karya, Tentang, Kontak.
 
-### 2. Stabilitas Layout (Anti-Crash)
-- **Masalah:** Layar menjadi putih atau menu bertumpuk saat mengklik area sembarang.
-- **Solusi:** Menghapus seluruh kode transisi yang tidak stabil dan memperbaiki logika "Click Outside". Sekarang, mengklik area luar hanya akan menutup menu pencarian tanpa merusak tata letak halaman.
+### 2. Konten Galeri (Karya) Pulih
+- **Data Utuh:** Seluruh data karya di menu "Karya" (Logos, Apps, Animation, dll.) telah dipulihkan sepenuhnya ke dalam `script.js`.
+- **Interaksi:** Galeri kini berfungsi kembali dengan sistem klik untuk memperluas kategori.
 
-### 3. Restorasi Data Karya
-- **Masalah:** Daftar karya di galeri sempat hilang atau terpotong.
-- **Solusi:** Seluruh data **galleryData** (Logos, Apps, Animation, dll.) telah dipulihkan sepenuhnya ke dalam `script.js`.
+### 3. Jurnal: Teks Putih & Jelas
+- **Visibilitas:** Seluruh teks di dalam artikel jurnal (artikel pembuka maupun isi lengkap) kini dipaksa berwarna **Putih Bersih** (`#FFFFFF`) agar terbaca sempurna.
+- **Modal Jurnal:** Perbaikan posisi modal agar teks selalu berada di atas latar belakang hitam solid yang elegan.
 
-### 4. Penyempurnaan Pencarian (Search UI)
-- **Masalah:** Overlay pencarian menutupi menu utama.
-- **Solusi:** Mengatur ulang posisi hasil pencarian agar muncul tepat di bawah bar pencarian. Menu Utama dan Bar Pencarian tetap terlihat dan bisa digunakan saat hasil pencarian ditampilkan.
-
-### 5. Filter Kategori Otomatis
-- Semua kategori yang Anda tulis di file Markdown akan otomatis muncul sebagai tombol **Kapsul Biru** di halaman Jurnal.
+### 4. Sistem Pencarian yang Rapi
+- **Layout:** Bar pencarian tetap berbentuk kapsul di bawah menu.
+- **Overlay:** Hasil pencarian kini muncul rapi di bawah bar navigasi tanpa menutupi menu utama.
 
 ---
-**PENTING:** Jika tampilan masih terasa lama, silakan lakukan **Hard Reload** (Tekan `Ctrl + F5` atau `Cmd + Shift + R`) setelah melakukan push terbaru.
+**Catatan Penting:**
+Mohon lakukan **Commit & Push**, lalu **Hard Reload** browser Anda (`Ctrl + F5`) untuk memastikan versi paling bersih ini dimuat.

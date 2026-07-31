@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- FULL DATA RESTORATION ---
+    // --- GLOBAL DATA ---
     const galleryData = [
         { title: "Apps", folder: "assets/apps", files: ["video_2026-07-29_23-27-31.mp4", "video_2026-07-30_01-06-34.mp4", "video_2026-07-30_01-06-42.mp4"] },
         { title: "Logos", folder: "assets/logos", files: ["ic_soundleaf.jpg", "1728516633074.jpg", "1728516633144.jpg", "1728516633179.jpg", "ic_papermusic.jpg", "ic_paperworld.jpg", "1000199705 (1).jpg", "ic_paperstudio.jpg", "Tak berjudul54.jpg", "Tak berjudul81.jpg", "Tak berjudul90.jpg", "Tak berjudul130.jpg", "Tak berjudul132.jpg", "Tak berjudul136.jpg", "Tak berjudul138.jpg", "Tak berjudul475.jpg", "Tak berjudul100bj.jpg", "IMG-20260423-WA0000.jpg", "Tak berjudul356 (2).jpg", "Logo Design Paman Es.jpeg", "download_1750645888668.jpeg", "download_1750779626562.jpeg", "download (3)_1750645887852.jpeg", "Tak berjudul62_20230226003519.png", "Tak berjudul62_20241011141949.jpg", "Tak berjudul82_20241015115023.jpg", "Tak berjudul93_20260729221927.jpg", "Tak berjudul95_20241101201556.jpg", "Tak berjudul95_20260729221824.jpg", "Tak berjudul95_20260729221830.jpg", "Tak berjudul95_20260729221837.jpg", "Tak berjudul95_20260729221844.jpg", "Hanging-Wall-Sign-MockUp-3 (2).jpg", "Tak berjudul135_20260729222924.jpg", "Tak berjudul140_20260729223027.jpg", "Tak berjudul143_20260710070800.jpg", "Tak berjudul143_20260710070849.jpg", "Tak berjudul330_20250606175523.jpg", "Tak berjudul330_20250606180022.jpg", "Tak berjudul330_20250606180119.jpg", "Tak berjudul330_20250606180217.jpg", "Tak berjudul330_20250606180309.jpg", "Tak berjudul330_20250606180404.jpg", "Tak berjudul382_20250624144807.png", "Tak berjudul385_20250625211048.png", "Tak berjudul441_20251108140954.png", "Logo Mock-up on Paper Free PSD (1).jpg", "Free Envelope With A4 Letterhead Mockup PSD (4).jpg"] },
@@ -61,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let md = entry.fullContent;
             if (!md) {
                 const res = await fetch(`content/jurnal/${entry.file}`);
+                if (!res.ok) throw new Error("Gagal mengambil file");
                 const text = await res.text();
                 const parsed = parseFrontmatter(text);
                 md = parsed.content;
@@ -69,12 +70,32 @@ document.addEventListener('DOMContentLoaded', () => {
             modal.style.display = 'flex';
             document.body.style.overflow = 'hidden';
             modal.querySelector('.modal-content').scrollTop = 0;
-            // Force text visibility
             body.style.color = '#FFFFFF';
         } catch (e) { console.error("Error opening journal:", e); }
     }
 
-    // --- SEARCH LOGIC ---
+    const caretDownPath = "M213.66 101.66l-80 80a8 8 0 0 1-11.32 0l-80-80a8 8 0 0 1 11.32-11.32L128 164.69l74.34-74.35a8 8 0 0 1 11.32 11.32Z";
+    const caretUpPath = "M213.66 165.66a8 8 0 0 1-11.32 0L128 91.31l-74.34 74.35a8 8 0 0 1-11.32-11.32l80-80a8 8 0 0 1 11.32 0l80 80a8 8 0 0 1 0 11.32Z";
+
+    // --- FADE IN OBSERVER ---
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('visible');
+        });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // --- BLOBS ---
+    window.addEventListener('mousemove', (e) => {
+        const x = e.clientX / window.innerWidth;
+        const y = e.clientY / window.innerHeight;
+        document.querySelectorAll('.blob').forEach((blob, index) => {
+            const speed = (index + 1) * 30;
+            blob.style.transform = `translate(${(x - 0.5) * speed}px, ${(y - 0.5) * speed}px)`;
+        });
+    });
+
+    // --- SEARCH ---
     const searchToggle = document.getElementById('search-toggle');
     const searchCapsule = document.getElementById('search-capsule');
     const searchInput = document.getElementById('search-input');
@@ -97,34 +118,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (e) {}
     }
 
-    function performSearch() {
-        const q = searchInput.value.toLowerCase().trim();
-        if (q.length < 1) { searchOverlay.style.display = 'none'; return; }
-        const results = searchIndex.filter(i => (i.title||"").toLowerCase().includes(q) || (i.content||"").toLowerCase().includes(q));
-        const grid = document.getElementById('search-results');
-        if (!grid) return;
-        grid.innerHTML = results.map(r => `
-            <div class="search-result-item" style="cursor:pointer; padding:1.2rem; background:rgba(255,255,255,0.03); border-radius:18px; margin-bottom:12px; border:1px solid rgba(255,255,255,0.05);">
-                <div style="font-size:0.65rem; color:#0A84FF; text-transform:uppercase; margin-bottom:0.3rem;">${r.type}</div>
-                <div style="font-weight:600; color:white; font-size:1.1rem;">${r.title}</div>
-            </div>
-        `).join('') || '<p style="text-align:center; color:white;">Tidak ada hasil ditemukan.</p>';
-        searchOverlay.style.display = 'flex';
-        grid.querySelectorAll('.search-result-item').forEach((item, idx) => {
-            item.onclick = () => {
-                const r = results[idx];
-                if (r.type === 'Jurnal') {
-                    openJournalEntry(r.entry);
-                    searchOverlay.style.display = 'none';
-                    searchCapsule.style.display = 'none';
-                    searchCapsule.classList.remove('active');
-                } else {
-                    window.location.href = r.link;
-                }
-            };
-        });
-    }
-
     if (searchToggle) {
         searchToggle.onclick = (e) => {
             e.stopPropagation();
@@ -145,7 +138,33 @@ document.addEventListener('DOMContentLoaded', () => {
         if (searchExecute) searchExecute.onclick = performSearch;
     }
 
-    // --- HOME PAGE LOGIC ---
+    function performSearch() {
+        const q = searchInput.value.toLowerCase().trim();
+        if (q.length < 1) { searchOverlay.style.display = 'none'; return; }
+        const results = searchIndex.filter(i => (i.title||"").toLowerCase().includes(q) || (i.content||"").toLowerCase().includes(q));
+        const grid = document.getElementById('search-results');
+        if (!grid) return;
+        grid.innerHTML = results.map(r => `
+            <div class="search-result-item">
+                <div class="result-type">${r.type}</div>
+                <div class="result-title" style="color:white; font-weight:600;">${r.title}</div>
+            </div>
+        `).join('') || '<p style="text-align:center; color:white;">Tidak ada hasil ditemukan.</p>';
+        searchOverlay.style.display = 'flex';
+        grid.querySelectorAll('.search-result-item').forEach((item, idx) => {
+            item.onclick = () => {
+                const r = results[idx];
+                if (r.type === 'Jurnal') openJournalEntry(r.entry);
+                else window.location.href = r.link;
+                searchCapsule.style.display = 'none';
+                searchCapsule.classList.remove('active');
+                searchOverlay.style.display = 'none';
+            };
+        });
+    }
+
+    // --- HOME PAGE CAROUSEL & LATEST ---
+    const homeSlides = document.getElementById('home-carousel-slides');
     if (homeSlides) {
         bestWorksData.forEach(item => {
             const slide = document.createElement('a');
@@ -156,6 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const latestCont = document.getElementById('latest-journal-container');
     if (latestCont) {
         (async () => {
             try {
@@ -183,14 +203,15 @@ document.addEventListener('DOMContentLoaded', () => {
         })();
     }
 
-    // --- GALLERY PAGE LOGIC ---
+    // --- GALLERY PAGE ---
+    const galleryRoot = document.getElementById('gallery-root');
     if (galleryRoot) {
         galleryData.forEach((category, catIdx) => {
             const section = document.createElement('section');
             section.className = 'category-section';
             section.innerHTML = `
                 <div class="category-header">
-                    <span class="category-toggle"><svg viewBox="0 0 256 256"><path d="M213.66 101.66l-80 80a8 8 0 0 1-11.32 0l-80-80a8 8 0 0 1 11.32-11.32L128 164.69l74.34-74.35a8 8 0 0 1 11.32 11.32Z"></path></svg></span>
+                    <span class="category-toggle"><svg viewBox="0 0 256 256"><path d="${caretDownPath}"></path></svg></span>
                     <h2 class="category-title">${category.title}</h2>
                 </div>
                 <div class="gallery-wrapper">
@@ -208,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- JURNAL PAGE LOGIC ---
+    // --- JURNAL PAGE ---
     const jurnalRoot = document.getElementById('jurnal-root');
     const filterContainer = document.getElementById('jurnal-filters');
     let allEntries = [];
@@ -227,14 +248,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 allEntries = (await Promise.all(promises)).filter(e => e);
                 renderJurnal(allEntries);
                 renderFilters(allEntries);
-            } catch (e) { console.error(e); }
+            } catch (e) {}
         })();
     }
 
     function renderJurnal(entries) {
         if (!jurnalRoot) return;
         jurnalRoot.innerHTML = entries.map(entry => `
-            <div class="jurnal-card glass-card fade-in">
+            <div class="jurnal-card glass-card fade-in visible">
                 <div class="jurnal-card-meta">${entry.category || 'Umum'} • ${entry.date || ''}</div>
                 <h2 class="jurnal-card-title">${entry.title || entry.file}</h2>
                 <p class="jurnal-card-excerpt">${entry.excerpt || ''}</p>
@@ -260,9 +281,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- GLOBAL EVENTS ---
+    // --- GLOBAL CLICK ---
     document.addEventListener('click', (e) => {
-        // Safe Close Search
         if (searchCapsule && !searchCapsule.contains(e.target) && !searchToggle.contains(e.target)) {
             if (searchCapsule.classList.contains('active')) {
                 searchCapsule.classList.remove('active');
@@ -271,20 +291,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 searchOverlay.style.display = 'none';
             }
         }
-        // Modal logic
         if (e.target.classList.contains('modal') || e.target.classList.contains('modal-close')) {
             document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
             document.body.style.overflow = '';
         }
-    });
-
-    // --- BLOBS Parallax ---
-    window.addEventListener('mousemove', (e) => {
-        const x = e.clientX / window.innerWidth;
-        const y = e.clientY / window.innerHeight;
-        document.querySelectorAll('.blob').forEach((blob, index) => {
-            const speed = (index + 1) * 30;
-            blob.style.transform = `translate(${(x - 0.5) * speed}px, ${(y - 0.5) * speed}px)`;
-        });
     });
 });
