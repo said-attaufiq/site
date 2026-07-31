@@ -1,42 +1,42 @@
-# Perbaikan Menyeluruh Bug & UI (Stabilitas & Estetika)
+# Perbaikan Total: Bug Jurnal, Stabilitas Layout, & UI Pencarian
 
-Rencana ini bertujuan untuk menyelesaikan masalah teks jurnal yang hilang, kerusakan tata letak (layar putih/bertumpuk), serta memperbaiki tampilan pencarian dan filter kategori agar benar-benar berfungsi dan estetik.
+Rencana ini adalah upaya final dan menyeluruh untuk memastikan semua fitur (Jurnal, Pencarian, & Filter) berjalan sempurna, teks terlihat jelas, dan website tidak lagi mengalami kerusakan tata letak (layar putih).
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **Pencarian:** Navigasi (Menu) dan Bar Pencarian akan tetap terlihat di atas hasil pencarian. Hasil pencarian muncul di bawahnya dengan latar belakang transparan yang elegan.
-> **Jurnal:** Teks artikel dipastikan berwarna putih solid agar terbaca jelas. Library `marked.js` akan ditambahkan ke seluruh halaman untuk memastikan sistem baca berfungsi di mana saja.
-> **Stabilitas:** Logika klik luar akan diperketat agar tidak menyebabkan kerusakan visual pada halaman (masalah layar putih).
+> **Data Galeri:** Saya akan mengembalikan seluruh data karya Anda yang sebelumnya terpotong (Logos, Apps, Digital Illustrations, dll.).
+> **Aksesibilitas Teks:** Teks artikel akan dipaksa berwarna putih terang agar terbaca di semua perangkat.
+> **Navigasi Search:** Bagian atas website (Menu & Search Bar) tidak akan tertutup saat mencari. Anda tetap bisa melihat navigasi sambil melihat hasil pencarian.
+> **Stabilitas:** Semua fitur "eksperimental" yang tidak stabil akan dihapus untuk menjamin website selalu rapi.
 
 ## Proposed Changes
 
-### [Library & Script Support]
-
-#### [MODIFY] Semua Halaman HTML
-- Menambahkan library `marked.js` di `index.html`, `karya.html`, `tentang.html`, dan `kontak.html`.
-- Memastikan struktur `search-overlay` dan `jurnal-modal` ada di semua halaman yang membutuhkannya (terutama Beranda untuk fitur "Baca Selengkapnya").
-
-### [Logic Fixes]
+### [Script & Data Restoration]
 
 #### [MODIFY] [script.js](file:///D:/Project App/site/script.js)
-- **Frontmatter Parser:** Menggunakan regex yang lebih kuat untuk menangani spasi dan karakter baris baru (`\r\n` atau `\n`). Ini memastikan kategori dan tag terdeteksi.
-- **Search Toggle Logic:** Memisahkan fungsi animasi buka/tutup agar tidak ada tabrakan state.
-- **Click-Outside Guard:** Memastikan deteksi klik luar hanya berlaku untuk elemen pencarian, bukan elemen lain yang bisa merusak layout.
-- **Global `openJournalEntry`:** Memindahkan fungsi ini ke area global agar bisa dipanggil dari hasil pencarian maupun kartu di beranda.
+- **Restorasi Data:** Mengembalikan seluruh `galleryData` dan `bestWorksData` ke kondisi awal yang lengkap.
+- **Robust Markdown:** Memperbaiki sistem pembaca teks jurnal agar **selalu memunculkan teks** meskipun file memiliki format baris yang berbeda.
+- **Dinamis Filter:** Memastikan kategori (seperti Puisi, Cerpen, dll.) muncul otomatis sebagai kapsul biru.
+- **Aman Klik:** Menulis ulang logika penutupan otomatis (klik luar) agar hanya menutup search, bukan merusak halaman.
 
 ### [UI & Styling Refinement]
 
 #### [MODIFY] [style.css](file:///D:/Project App/site/style.css)
-- **Search Button Clean-up:** Menghapus background putih/kotak pada ikon pencarian.
-- **Search Overlay Position:** Mengatur `top` dan `z-index` agar overlay hasil pencarian berada di bawah bar navigasi.
-- **Filter Capsule Style:** Mengubah tombol kategori menjadi bentuk kapsul (border-radius besar) yang identik dengan menu utama.
-- **Force White Text:** Menambahkan aturan CSS `!important` pada warna teks di dalam modal jurnal agar tidak tertutup latar belakang.
+- **Overlay Pencarian:** Mengatur ulang posisi agar **selalu berada di bawah menu**. Latar belakang hasil pencarian dibuat transparan dengan efek blur yang tidak menutupi tombol menu.
+- **Teks Jurnal:** Menambahkan aturan CSS global untuk memastikan teks di dalam jurnal **selalu berwarna putih** (`#FFFFFF`).
+- **Ikon Kaca Pembesar:** Memastikan ikon bersih (clean), berwarna putih, dan tanpa latar belakang kotak.
+
+### [Fixing Layout Crash]
+
+#### [MODIFY] Semua Halaman HTML
+- Memastikan link CSS dan JS menggunakan versi terbaru untuk menembus cache browser.
 
 ## Verification Plan
 
 ### Manual Verification
-1. **Uji Jurnal (Beranda & Halaman Jurnal):** Klik "Baca Selengkapnya" dan pastikan tulisan muncul dengan warna putih yang jelas.
-2. **Uji Stabilitas Klik:** Klik di sembarang area luar dan pastikan halaman tidak berubah menjadi putih atau berantakan.
-3. **Uji Filter:** Pastikan kategori "Puisi" (dan kategori lain nantinya) muncul sebagai kapsul di samping "Semua".
-4. **Uji Pencarian:** Masukkan kata kunci, tekan Enter, dan pastikan Menu Utama tetap terlihat di atas hasil pencarian.
+1. **Buka Jurnal:** Klik artikel dan pastikan teks putih muncul jelas.
+2. **Filter Kategori:** Cek apakah tombol kategori (seperti Puisi) sudah muncul dalam bentuk kapsul.
+3. **Gunakan Pencarian:** Ketik sesuatu dan pastikan menu navigasi tetap terlihat di atas hasil.
+4. **Uji Klik Luar:** Klik area kosong di sekitar website dan pastikan layout tetap rapi (tidak menjadi putih).
+5. **Cek Galeri:** Pastikan semua kategori karya (Logos, Apps, dll.) kembali muncul lengkap.
