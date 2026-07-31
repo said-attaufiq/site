@@ -9,6 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Markdown Parser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
     <div class="liquid-bg">
@@ -51,6 +53,16 @@
         <span class="modal-close" id="search-close">&times;</span>
         <div class="search-results-wrap">
             <div id="search-results" class="search-results-grid"></div>
+        </div>
+    </div>
+
+    <!-- Modal untuk membaca jurnal -->
+    <div id="jurnal-modal" class="modal">
+        <span class="modal-close">&times;</span>
+        <div class="modal-content journal-reader-content glass-card">
+            <div id="journal-article-body" class="markdown-body">
+                <!-- Markdown content will be rendered here -->
+            </div>
         </div>
     </div>
 

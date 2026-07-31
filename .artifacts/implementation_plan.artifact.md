@@ -1,40 +1,42 @@
-# Perbaikan Bug Jurnal & Pemurnian UI Pencarian
+# Perbaikan Menyeluruh Bug & UI (Stabilitas & Estetika)
 
-Rencana ini bertujuan untuk memperbaiki masalah teks jurnal yang tidak muncul, memperbaiki kerusakan tata letak saat klik area sembarang, serta menyempurnakan tampilan filter jurnal dan overlay pencarian.
+Rencana ini bertujuan untuk menyelesaikan masalah teks jurnal yang hilang, kerusakan tata letak (layar putih/bertumpuk), serta memperbaiki tampilan pencarian dan filter kategori agar benar-benar berfungsi dan estetik.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **Pencarian:** Overlay hasil pencarian sekarang akan muncul di bawah navigasi, sehingga menu dan bar pencarian tetap terlihat dan dapat diakses.
-> **Filter Jurnal:** Tombol kategori akan dibuat lebih konsisten dengan gaya navigasi utama (kapsul).
-> **Stabilitas Layout:** Memperbaiki konflik script yang menyebabkan tampilan rusak atau menjadi putih saat mengklik area sembarang.
+> **Pencarian:** Navigasi (Menu) dan Bar Pencarian akan tetap terlihat di atas hasil pencarian. Hasil pencarian muncul di bawahnya dengan latar belakang transparan yang elegan.
+> **Jurnal:** Teks artikel dipastikan berwarna putih solid agar terbaca jelas. Library `marked.js` akan ditambahkan ke seluruh halaman untuk memastikan sistem baca berfungsi di mana saja.
+> **Stabilitas:** Logika klik luar akan diperketat agar tidak menyebabkan kerusakan visual pada halaman (masalah layar putih).
 
 ## Proposed Changes
 
-### [Bug Fixes]
+### [Library & Script Support]
+
+#### [MODIFY] Semua Halaman HTML
+- Menambahkan library `marked.js` di `index.html`, `karya.html`, `tentang.html`, dan `kontak.html`.
+- Memastikan struktur `search-overlay` dan `jurnal-modal` ada di semua halaman yang membutuhkannya (terutama Beranda untuk fitur "Baca Selengkapnya").
+
+### [Logic Fixes]
 
 #### [MODIFY] [script.js](file:///D:/Project App/site/script.js)
-- **Fix Jurnal Content:** Memastikan konten Markdown dimuat dengan benar sebelum ditampilkan di modal. Menambahkan pengecekan jika konten kosong.
-- **Fix Layout Crash:** Memperbaiki logika "Click Outside" agar tidak mengganggu elemen global lainnya dan mencegah perilaku tidak terduga pada `body` atau `main`.
-- **Fix Search Interaction:** Menyesuaikan z-index dan posisi tampilan hasil pencarian.
+- **Frontmatter Parser:** Menggunakan regex yang lebih kuat untuk menangani spasi dan karakter baris baru (`\r\n` atau `\n`). Ini memastikan kategori dan tag terdeteksi.
+- **Search Toggle Logic:** Memisahkan fungsi animasi buka/tutup agar tidak ada tabrakan state.
+- **Click-Outside Guard:** Memastikan deteksi klik luar hanya berlaku untuk elemen pencarian, bukan elemen lain yang bisa merusak layout.
+- **Global `openJournalEntry`:** Memindahkan fungsi ini ke area global agar bisa dipanggil dari hasil pencarian maupun kartu di beranda.
+
+### [UI & Styling Refinement]
 
 #### [MODIFY] [style.css](file:///D:/Project App/site/style.css)
-- **Fix Text Visibility:** Memastikan warna teks di dalam `.markdown-body` kontras dengan latar belakang modal.
-- **Fix Overlapping Nav:** Menghapus atau menyesuaikan properti CSS yang menyebabkan teks menu bertumpuk saat modal aktif.
-
-### [UI Enhancements]
-
-#### [MODIFY] [style.css](file:///D:/Project App/site/style.css)
-- **Search Overlay:** Mengubah `top: 15vh` menjadi posisi yang dinamis tepat di bawah navigasi kapsul. Mengatur latar belakang agar lebih transparan (blur) tanpa menutupi navigasi.
-- **Journal Filters:** Mendesain ulang `.filter-btn` agar memiliki bentuk kapsul yang identik dengan menu utama.
-
-#### [MODIFY] [jurnal.html](file:///D:/Project App/site/jurnal.html)
-- Penyesuaian struktur jika diperlukan untuk mendukung filter yang lebih rapi.
+- **Search Button Clean-up:** Menghapus background putih/kotak pada ikon pencarian.
+- **Search Overlay Position:** Mengatur `top` dan `z-index` agar overlay hasil pencarian berada di bawah bar navigasi.
+- **Filter Capsule Style:** Mengubah tombol kategori menjadi bentuk kapsul (border-radius besar) yang identik dengan menu utama.
+- **Force White Text:** Menambahkan aturan CSS `!important` pada warna teks di dalam modal jurnal agar tidak tertutup latar belakang.
 
 ## Verification Plan
 
 ### Manual Verification
-1. **Uji Jurnal:** Klik "Baca Selengkapnya" dan pastikan teks Markdown muncul dengan jelas dan terbaca.
-2. **Uji Klik Global:** Klik di luar area modal/search berkali-kali dan pastikan layout website tetap stabil (tidak menjadi putih atau bertumpuk).
-3. **Uji Pencarian:** Lakukan pencarian dan pastikan navigasi atas (Menu & Search Bar) tetap terlihat di atas hasil pencarian.
-4. **Uji Filter:** Pastikan semua kategori muncul sebagai tombol kapsul tersendiri.
+1. **Uji Jurnal (Beranda & Halaman Jurnal):** Klik "Baca Selengkapnya" dan pastikan tulisan muncul dengan warna putih yang jelas.
+2. **Uji Stabilitas Klik:** Klik di sembarang area luar dan pastikan halaman tidak berubah menjadi putih atau berantakan.
+3. **Uji Filter:** Pastikan kategori "Puisi" (dan kategori lain nantinya) muncul sebagai kapsul di samping "Semua".
+4. **Uji Pencarian:** Masukkan kata kunci, tekan Enter, dan pastikan Menu Utama tetap terlihat di atas hasil pencarian.

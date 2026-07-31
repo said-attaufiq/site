@@ -1,14 +1,17 @@
-# Task List - Perbaikan Bug Jurnal & Pemurnian UI Pencarian
+# Task List - Perbaikan Menyeluruh Bug & UI
 
-- [ ] Perbaikan Konten Jurnal & Stabilitas (JS)
-    - [ ] Fix `openJournalEntry` agar teks tampil konsisten
-    - [ ] Fix logika "Click Outside" untuk mencegah layout crash/putih
-    - [ ] Optimasi muat ulang data jurnal
-- [ ] Penyempurnaan Tampilan (CSS)
-    - [ ] Perbaikan warna & visibilitas `.markdown-body`
-    - [ ] Desain ulang Filter Kategori menjadi bentuk kapsul
-    - [ ] Update `search-overlay` agar tidak menutupi navigasi & search bar
+- [ ] Sinkronisasi Library & Struktur (HTML)
+    - [ ] Tambahkan `marked.js` ke semua halaman
+    - [ ] Pastikan modal jurnal ada di Beranda
+- [ ] Refactor Logika Stabilitas (JS)
+    - [ ] Perkuat `parseFrontmatter` (Regex robust)
+    - [ ] Perbaiki logika "Click Outside" (Gunakan target check yang presisi)
+    - [ ] Pastikan `openJournalEntry` memuat konten dengan benar (Fetch jika belum ada)
+    - [ ] Dinamisasi tombol kategori (kapsul)
+- [ ] Penyempurnaan Visual (CSS)
+    - [ ] Fix Ikon Search (Bersih & Putih)
+    - [ ] Fix Search Overlay (Posisi di bawah Nav)
+    - [ ] Fix Journal Text (Force White)
+    - [ ] Fix Layout Stability (Hapus view-transition & fix overlapping)
 - [ ] Verifikasi Akhir
-    - [ ] Uji baca artikel jurnal
-    - [ ] Uji stabilitas klik area sembarang
-    - [ ] Uji pencarian & navigasi tetap terlihat
+    - [ ] Cek semua menu & fitur di browser
