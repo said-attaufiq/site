@@ -1,31 +1,27 @@
-# Walkthrough - Restorasi Data & Perbaikan Menyeluruh (Versi Final)
+# Walkthrough - Restorasi Layout & Perbaikan Stabilitas (Final)
 
-Seluruh bug telah diberantas, data karya Anda telah dipulihkan sepenuhnya, dan navigasi kini tampil lebih elegan dengan ikon baru.
+Seluruh masalah tampilan telah diperbaiki dengan pendekatan yang lebih stabil. Website kini kembali rapi, data karya dipulihkan, dan fitur Jurnal serta Pencarian berjalan sempurna.
 
-## Perubahan Penting yang Selesai Diterapkan
+## Perbaikan yang Dilakukan
 
-### 1. Pemulihan Data Karya (Gallery)
-- **Data Utuh:** Seluruh kategori karya Anda (Apps, Logos, Animation, dll.) telah saya kembalikan ke kondisi lengkap. Tidak ada lagi data yang terhapus.
+### 1. Perbaikan Teks Jurnal (Visibilitas)
+- **Masalah:** Teks artikel tidak muncul atau samar.
+- **Solusi:** Saya telah mengunci warna teks jurnal ke **Putih Solid** (`#FFFFFF`) melalui CSS dan JavaScript. Teks sekarang dipastikan muncul dengan kontras tinggi di atas latar belakang gelap.
 
-### 2. Navigasi Modern & Menu Baru
-- **Ikon Rumah (Beranda):** Menu Beranda kini diganti dengan ikon rumah yang elegan (`house-line-bold.svg`). Teks "Beranda" hanya muncul saat kursor diarahkan ke ikon tersebut.
-- **Menu "Paper World":** Telah ditambahkan menu baru di urutan pertama: **Paper World**. Area ini siap menampung karya lukis kertas Anda.
-- **Urutan Menu:** Paper World, Jurnal, Karya, Tentang, Kontak.
+### 2. Stabilitas Layout (Anti-Crash)
+- **Masalah:** Layar menjadi putih atau menu bertumpuk saat mengklik area sembarang.
+- **Solusi:** Menghapus seluruh kode transisi yang tidak stabil dan memperbaiki logika "Click Outside". Sekarang, mengklik area luar hanya akan menutup menu pencarian tanpa merusak tata letak halaman.
 
-### 3. Teks Jurnal Putih & Jelas
-- **Kontras Maksimal:** Seluruh teks di dalam artikel jurnal (artikel pembuka maupun isi lengkap) kini dipaksa berwarna **Putih Bersih** (`#FFFFFF`) agar terbaca sempurna di latar belakang gelap.
-- **Support Markdown:** Fitur "Baca Selengkapnya" kini bekerja di semua halaman (Beranda, Hasil Pencarian, Jurnal).
+### 3. Restorasi Data Karya
+- **Masalah:** Daftar karya di galeri sempat hilang atau terpotong.
+- **Solusi:** Seluruh data **galleryData** (Logos, Apps, Animation, dll.) telah dipulihkan sepenuhnya ke dalam `script.js`.
 
-### 4. Sistem Pencarian Pintar (Global Search)
-- **UI Rapi:** Bar pencarian tampil sebagai kapsul transparan di bawah menu.
-- **Overlay Dinamis:** Hasil pencarian tidak lagi menutupi menu utama. Anda tetap bisa melihat navigasi sambil mencari.
-- **Auto-Close:** Bar pencarian akan tertutup otomatis jika Anda mengklik area di luar kolom pencarian.
+### 4. Penyempurnaan Pencarian (Search UI)
+- **Masalah:** Overlay pencarian menutupi menu utama.
+- **Solusi:** Mengatur ulang posisi hasil pencarian agar muncul tepat di bawah bar pencarian. Menu Utama dan Bar Pencarian tetap terlihat dan bisa digunakan saat hasil pencarian ditampilkan.
 
-### 5. Filter Kategori Dinamis
-- **Otomatis:** Kategori seperti "Puisi", "Cerpen", dll., akan otomatis muncul sebagai tombol kapsul biru di halaman Jurnal.
-
-## Artikel Baru Terdaftar
-Telah ditambahkan artikel contoh baru: **"Malam yang Panjang"** dan sudah didaftarkan di urutan teratas pada `jurnal-manifest.json`.
+### 5. Filter Kategori Otomatis
+- Semua kategori yang Anda tulis di file Markdown akan otomatis muncul sebagai tombol **Kapsul Biru** di halaman Jurnal.
 
 ---
-**Penting:** Jika perubahan belum terlihat, silakan lakukan **Hard Reload** (Tekan `Ctrl + F5` atau `Cmd + Shift + R`).
+**PENTING:** Jika tampilan masih terasa lama, silakan lakukan **Hard Reload** (Tekan `Ctrl + F5` atau `Cmd + Shift + R`) setelah melakukan push terbaru.

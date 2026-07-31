@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- GLOBAL DATA (RESTORATION) ---
+    // --- FULL DATA RESTORATION ---
     const galleryData = [
         { title: "Apps", folder: "assets/apps", files: ["video_2026-07-29_23-27-31.mp4", "video_2026-07-30_01-06-34.mp4", "video_2026-07-30_01-06-42.mp4"] },
         { title: "Logos", folder: "assets/logos", files: ["ic_soundleaf.jpg", "1728516633074.jpg", "1728516633144.jpg", "1728516633179.jpg", "ic_papermusic.jpg", "ic_paperworld.jpg", "1000199705 (1).jpg", "ic_paperstudio.jpg", "Tak berjudul54.jpg", "Tak berjudul81.jpg", "Tak berjudul90.jpg", "Tak berjudul130.jpg", "Tak berjudul132.jpg", "Tak berjudul136.jpg", "Tak berjudul138.jpg", "Tak berjudul475.jpg", "Tak berjudul100bj.jpg", "IMG-20260423-WA0000.jpg", "Tak berjudul356 (2).jpg", "Logo Design Paman Es.jpeg", "download_1750645888668.jpeg", "download_1750779626562.jpeg", "download (3)_1750645887852.jpeg", "Tak berjudul62_20230226003519.png", "Tak berjudul62_20241011141949.jpg", "Tak berjudul82_20241015115023.jpg", "Tak berjudul93_20260729221927.jpg", "Tak berjudul95_20241101201556.jpg", "Tak berjudul95_20260729221824.jpg", "Tak berjudul95_20260729221830.jpg", "Tak berjudul95_20260729221837.jpg", "Tak berjudul95_20260729221844.jpg", "Hanging-Wall-Sign-MockUp-3 (2).jpg", "Tak berjudul135_20260729222924.jpg", "Tak berjudul140_20260729223027.jpg", "Tak berjudul143_20260710070800.jpg", "Tak berjudul143_20260710070849.jpg", "Tak berjudul330_20250606175523.jpg", "Tak berjudul330_20250606180022.jpg", "Tak berjudul330_20250606180119.jpg", "Tak berjudul330_20250606180217.jpg", "Tak berjudul330_20250606180309.jpg", "Tak berjudul330_20250606180404.jpg", "Tak berjudul382_20250624144807.png", "Tak berjudul385_20250625211048.png", "Tak berjudul441_20251108140954.png", "Logo Mock-up on Paper Free PSD (1).jpg", "Free Envelope With A4 Letterhead Mockup PSD (4).jpg"] },
@@ -61,157 +61,20 @@ document.addEventListener('DOMContentLoaded', () => {
             let md = entry.fullContent;
             if (!md) {
                 const res = await fetch(`content/jurnal/${entry.file}`);
-                if (!res.ok) throw new Error("Gagal mengambil file");
                 const text = await res.text();
                 const parsed = parseFrontmatter(text);
                 md = parsed.content;
             }
-            if (typeof marked !== 'undefined') {
-                body.innerHTML = marked.parse(md);
-            } else {
-                body.innerHTML = `<pre style="white-space: pre-wrap; color: white;">${md}</pre>`;
-            }
+            body.innerHTML = marked.parse(md);
             modal.style.display = 'flex';
             document.body.style.overflow = 'hidden';
             modal.querySelector('.modal-content').scrollTop = 0;
+            // Force text visibility
+            body.style.color = '#FFFFFF';
         } catch (e) { console.error("Error opening journal:", e); }
     }
 
-    // --- SHARED UI LOGIC ---
-    const caretDownPath = "M213.66 101.66l-80 80a8 8 0 0 1-11.32 0l-80-80a8 8 0 0 1 11.32-11.32L128 164.69l74.34-74.35a8 8 0 0 1 11.32 11.32Z";
-    const caretUpPath = "M213.66 165.66a8 8 0 0 1-11.32 0L128 91.31l-74.34 74.35a8 8 0 0 1-11.32-11.32l80-80a8 8 0 0 1 11.32 0l80 80a8 8 0 0 1 0 11.32Z";
-    const caretLeftPath = "M165.66,202.34a8,8,0,0,1-11.32,11.32l-80-80a8,8,0,0,1,0-11.32l80-80a8,8,0,0,1,11.32,11.32L91.31,128Z";
-    const caretRightPath = "M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z";
-
-    // --- HOME PAGE ---
-    const homeSlides = document.getElementById('home-carousel-slides');
-    if (homeSlides) {
-        bestWorksData.forEach(item => {
-            const slide = document.createElement('a');
-            slide.href = `karya.html?category=${encodeURIComponent(item.category)}`;
-            slide.className = 'home-slide';
-            slide.innerHTML = `<img src="${item.image}" alt="${item.category}"><div class="home-category-name">${item.category}</div>`;
-            homeSlides.appendChild(slide);
-        });
-        // Auto-carousel would go here
-    }
-
-    const latestCont = document.getElementById('latest-journal-container');
-    if (latestCont) {
-        (async () => {
-            try {
-                const res = await fetch('content/jurnal/jurnal-manifest.json');
-                const list = await res.json();
-                if (list.length > 0) {
-                    const postRes = await fetch(`content/jurnal/${list[0]}`);
-                    const text = await postRes.text();
-                    const { metadata } = parseFrontmatter(text);
-                    latestCont.innerHTML = `
-                        <h2 style="margin-bottom: 2rem; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 0.2em; opacity: 0.6; color:white;">Tulisan Terbaru</h2>
-                        <div class="latest-post-card glass-card" style="cursor:pointer;">
-                            <div class="latest-post-img"><img src="${metadata.thumbnail || 'assets/best/best_logo.jpg'}" alt=""></div>
-                            <div class="latest-post-content">
-                                <div class="jurnal-card-meta">${metadata.category || 'Umum'} • ${metadata.date || ''}</div>
-                                <h3 class="latest-post-title">${metadata.title || list[0]}</h3>
-                                <p class="latest-post-excerpt">${metadata.excerpt || ''}</p>
-                                <div class="btn-primary">Baca Selengkapnya</div>
-                            </div>
-                        </div>
-                    `;
-                    latestCont.querySelector('.latest-post-card').onclick = () => openJournalEntry({ file: list[0] });
-                }
-            } catch (e) {}
-        })();
-    }
-
-    // --- GALLERY PAGE ---
-    const galleryRoot = document.getElementById('gallery-root');
-    if (galleryRoot) {
-        galleryData.forEach((category, catIdx) => {
-            const section = document.createElement('section');
-            section.className = 'category-section';
-            section.innerHTML = `
-                <div class="category-header">
-                    <span class="category-toggle"><svg viewBox="0 0 256 256"><path d="${caretDownPath}"></path></svg></span>
-                    <h2 class="category-title">${category.title}</h2>
-                </div>
-                <div class="gallery-wrapper">
-                    <div class="carousel-btn prev"><svg viewBox="0 0 256 256"><path d="${caretLeftPath}"></path></svg></div>
-                    <div class="gallery-container">
-                        ${category.files.map((file, idx) => {
-                            const isVideo = file.toLowerCase().endsWith('.mp4');
-                            const path = `${category.folder}/${encodeURIComponent(file)}`;
-                            return `<div class="gallery-item" data-cat="${catIdx}" data-idx="${idx}">${isVideo ? `<video src="${path}" loop muted playsinline></video>` : `<img src="${path}" loading="lazy">`}</div>`;
-                        }).join('')}
-                    </div>
-                    <div class="carousel-btn next"><svg viewBox="0 0 256 256"><path d="${caretRightPath}"></path></svg></div>
-                </div>
-                <div class="carousel-dots"></div>
-            `;
-            galleryRoot.appendChild(section);
-
-            // Interaction logic for expanded gallery...
-            const header = section.querySelector('.category-header');
-            header.onclick = () => {
-                const isExpanded = section.classList.toggle('expanded');
-                section.querySelector('.category-toggle path').setAttribute('d', isExpanded ? caretUpPath : caretDownPath);
-            };
-        });
-    }
-
-    // --- JURNAL PAGE ---
-    const jurnalRoot = document.getElementById('jurnal-root');
-    const filterContainer = document.getElementById('jurnal-filters');
-    let allEntries = [];
-
-    if (jurnalRoot) {
-        (async () => {
-            try {
-                const res = await fetch('content/jurnal/jurnal-manifest.json');
-                const list = await res.json();
-                const promises = list.map(async file => {
-                    const r = await fetch(`content/jurnal/${file}`);
-                    const t = await r.text();
-                    const { content, metadata } = parseFrontmatter(t);
-                    return { ...metadata, file, fullContent: content };
-                });
-                allEntries = (await Promise.all(promises)).filter(e => e);
-                renderJurnal(allEntries);
-                renderFilters(allEntries);
-            } catch (e) { jurnalRoot.innerHTML = '<p style="color:white; text-align:center;">Gagal memuat jurnal.</p>'; }
-        })();
-    }
-
-    function renderJurnal(entries) {
-        if (!jurnalRoot) return;
-        jurnalRoot.innerHTML = entries.map(entry => `
-            <div class="jurnal-card glass-card fade-in" style="margin-bottom:20px;">
-                <div class="jurnal-card-meta">${entry.category || 'Umum'} • ${entry.date || ''}</div>
-                <h2 class="jurnal-card-title">${entry.title || entry.file}</h2>
-                <p class="jurnal-card-excerpt">${entry.excerpt || ''}</p>
-                <div class="btn-primary" style="display:inline-block; margin-top:1rem; cursor:pointer;">Baca Selengkapnya</div>
-            </div>
-        `).join('');
-        jurnalRoot.querySelectorAll('.jurnal-card').forEach((card, idx) => {
-            card.onclick = () => openJournalEntry(entries[idx]);
-        });
-    }
-
-    function renderFilters(entries) {
-        if (!filterContainer) return;
-        const cats = ['Semua', ...new Set(entries.map(e => e.category).filter(Boolean))];
-        filterContainer.innerHTML = cats.map(c => `<button class="filter-btn ${c === 'Semua' ? 'active' : ''}">${c}</button>`).join('');
-        filterContainer.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.onclick = () => {
-                filterContainer.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                const cat = btn.innerText;
-                renderJurnal(cat === 'Semua' ? allEntries : allEntries.filter(e => e.category === cat));
-            };
-        });
-    }
-
-    // --- SEARCH ---
+    // --- SEARCH LOGIC ---
     const searchToggle = document.getElementById('search-toggle');
     const searchCapsule = document.getElementById('search-capsule');
     const searchInput = document.getElementById('search-input');
@@ -220,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let searchIndex = [];
 
     async function buildIndex() {
+        if (searchIndex.length > 0) return;
         galleryData.forEach(g => searchIndex.push({ type: 'Karya', title: g.title, link: `karya.html?category=${encodeURIComponent(g.title)}` }));
         try {
             const r = await fetch('content/jurnal/jurnal-manifest.json');
@@ -249,11 +113,14 @@ document.addEventListener('DOMContentLoaded', () => {
         grid.querySelectorAll('.search-result-item').forEach((item, idx) => {
             item.onclick = () => {
                 const r = results[idx];
-                if (r.type === 'Jurnal') openJournalEntry(r.entry);
-                else window.location.href = r.link;
-                searchCapsule.classList.remove('active');
-                searchCapsule.style.display = 'none';
-                searchOverlay.style.display = 'none';
+                if (r.type === 'Jurnal') {
+                    openJournalEntry(r.entry);
+                    searchOverlay.style.display = 'none';
+                    searchCapsule.style.display = 'none';
+                    searchCapsule.classList.remove('active');
+                } else {
+                    window.location.href = r.link;
+                }
             };
         });
     }
@@ -265,18 +132,132 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isActive) {
                 searchCapsule.classList.remove('active');
                 searchCapsule.classList.add('hiding');
-                setTimeout(() => { searchCapsule.style.display = 'none'; }, 300);
+                setTimeout(() => { searchCapsule.style.display = 'none'; searchCapsule.classList.remove('hiding'); }, 300);
                 searchOverlay.style.display = 'none';
             } else {
                 searchCapsule.style.display = 'block';
-                searchCapsule.classList.remove('hiding');
                 searchCapsule.classList.add('active');
                 searchInput.focus();
-                if (searchIndex.length === 0) buildIndex();
+                buildIndex();
             }
         };
         searchInput.onkeypress = (e) => { if (e.key === 'Enter') performSearch(); };
         if (searchExecute) searchExecute.onclick = performSearch;
+    }
+
+    // --- HOME PAGE LOGIC ---
+    if (homeSlides) {
+        bestWorksData.forEach(item => {
+            const slide = document.createElement('a');
+            slide.href = `karya.html?category=${encodeURIComponent(item.category)}`;
+            slide.className = 'home-slide';
+            slide.innerHTML = `<img src="${item.image}" alt="${item.category}"><div class="home-category-name">${item.category}</div>`;
+            homeSlides.appendChild(slide);
+        });
+    }
+
+    if (latestCont) {
+        (async () => {
+            try {
+                const res = await fetch('content/jurnal/jurnal-manifest.json');
+                const list = await res.json();
+                if (list.length > 0) {
+                    const postRes = await fetch(`content/jurnal/${list[0]}`);
+                    const text = await postRes.text();
+                    const { metadata } = parseFrontmatter(text);
+                    latestCont.innerHTML = `
+                        <h2 style="margin-bottom: 2rem; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 0.2em; opacity: 0.6; color:white;">Tulisan Terbaru</h2>
+                        <div class="latest-post-card glass-card" style="cursor:pointer;">
+                            <div class="latest-post-img"><img src="${metadata.thumbnail || 'assets/best/best_logo.jpg'}" alt=""></div>
+                            <div class="latest-post-content">
+                                <div class="jurnal-card-meta">${metadata.category || 'Umum'} • ${metadata.date || ''}</div>
+                                <h3 class="latest-post-title">${metadata.title || list[0]}</h3>
+                                <p class="latest-post-excerpt">${metadata.excerpt || ''}</p>
+                                <div class="btn-primary">Baca Selengkapnya</div>
+                            </div>
+                        </div>
+                    `;
+                    latestCont.querySelector('.latest-post-card').onclick = () => openJournalEntry({ file: list[0] });
+                }
+            } catch (e) {}
+        })();
+    }
+
+    // --- GALLERY PAGE LOGIC ---
+    if (galleryRoot) {
+        galleryData.forEach((category, catIdx) => {
+            const section = document.createElement('section');
+            section.className = 'category-section';
+            section.innerHTML = `
+                <div class="category-header">
+                    <span class="category-toggle"><svg viewBox="0 0 256 256"><path d="M213.66 101.66l-80 80a8 8 0 0 1-11.32 0l-80-80a8 8 0 0 1 11.32-11.32L128 164.69l74.34-74.35a8 8 0 0 1 11.32 11.32Z"></path></svg></span>
+                    <h2 class="category-title">${category.title}</h2>
+                </div>
+                <div class="gallery-wrapper">
+                    <div class="gallery-container">
+                        ${category.files.map(file => {
+                            const isVideo = file.toLowerCase().endsWith('.mp4');
+                            const path = `${category.folder}/${encodeURIComponent(file)}`;
+                            return `<div class="gallery-item">${isVideo ? `<video src="${path}" loop muted playsinline></video>` : `<img src="${path}" loading="lazy">`}</div>`;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+            galleryRoot.appendChild(section);
+            section.querySelector('.category-header').onclick = () => section.classList.toggle('expanded');
+        });
+    }
+
+    // --- JURNAL PAGE LOGIC ---
+    const jurnalRoot = document.getElementById('jurnal-root');
+    const filterContainer = document.getElementById('jurnal-filters');
+    let allEntries = [];
+
+    if (jurnalRoot) {
+        (async () => {
+            try {
+                const res = await fetch('content/jurnal/jurnal-manifest.json');
+                const list = await res.json();
+                const promises = list.map(async file => {
+                    const r = await fetch(`content/jurnal/${file}`);
+                    const t = await r.text();
+                    const { content, metadata } = parseFrontmatter(t);
+                    return { ...metadata, file, fullContent: content };
+                });
+                allEntries = (await Promise.all(promises)).filter(e => e);
+                renderJurnal(allEntries);
+                renderFilters(allEntries);
+            } catch (e) { console.error(e); }
+        })();
+    }
+
+    function renderJurnal(entries) {
+        if (!jurnalRoot) return;
+        jurnalRoot.innerHTML = entries.map(entry => `
+            <div class="jurnal-card glass-card fade-in">
+                <div class="jurnal-card-meta">${entry.category || 'Umum'} • ${entry.date || ''}</div>
+                <h2 class="jurnal-card-title">${entry.title || entry.file}</h2>
+                <p class="jurnal-card-excerpt">${entry.excerpt || ''}</p>
+                <div class="btn-primary" style="display:inline-block; margin-top:1rem; cursor:pointer;">Baca Selengkapnya</div>
+            </div>
+        `).join('');
+        jurnalRoot.querySelectorAll('.jurnal-card').forEach((card, idx) => {
+            card.onclick = () => openJournalEntry(entries[idx]);
+        });
+    }
+
+    function renderFilters(entries) {
+        if (!filterContainer) return;
+        const cats = ['Semua', ...new Set(entries.map(e => e.category).filter(Boolean))];
+        filterContainer.innerHTML = cats.map(c => `<button class="filter-btn ${c === 'Semua' ? 'active' : ''}">${c}</button>`).join('');
+        filterContainer.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.onclick = () => {
+                filterContainer.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const cat = btn.innerText;
+                renderJurnal(cat === 'Semua' ? allEntries : allEntries.filter(e => e.category === cat));
+            };
+        });
     }
 
     // --- GLOBAL EVENTS ---
@@ -286,11 +267,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (searchCapsule.classList.contains('active')) {
                 searchCapsule.classList.remove('active');
                 searchCapsule.classList.add('hiding');
-                setTimeout(() => { searchCapsule.style.display = 'none'; }, 300);
+                setTimeout(() => { searchCapsule.style.display = 'none'; searchCapsule.classList.remove('hiding'); }, 300);
                 searchOverlay.style.display = 'none';
             }
         }
-
         // Modal logic
         if (e.target.classList.contains('modal') || e.target.classList.contains('modal-close')) {
             document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
